@@ -22,6 +22,14 @@
     
     - 옛날부터 고전적으로 계승되어 오던 언리얼 엔진 프레임워크 상에 또 다른 컨텐츠 프레임워크를 쌓아 올린 형태이기 때문에 생명주기 이슈가 발생해서 이걸 blueprint로 붙여야지만 모든 애들이 초기화가 끝난 다음에 그 다음 tick에 되므로 (blueprint가 좀 더 느리게 초기화 되므로)
 
+- UPROPERTY(Config)
+  
+  - 이런 식으로  Config가 써져있으면 Config 파일에서 설정을 하겠다는 뜻임.
+
+- 블루프린트로 만들었으면 (AssetManager에서)
+
+![](D1%20Study_assets/2025-03-02-19-28-24-image.png)
+
 ---
 
 ##### 모듈과 플러그인의 차이점
@@ -176,3 +184,49 @@
 - 참고) lyra 입력 처리가 어떻게 되는지 찾아보기
   
   - LyraHeroComponent에서 InitializePlayerInput이라는 함수 참고
+
+##### AssetManager
+
+- 리소스를 관리하는 전역 혹은 싱글톤 방식의 리소스 매니저
+
+- 참고) 커스텀 AssetManager 지정하는 법
+  
+  - Project Settings > Engine > General Settings > Asset Manager Class에서 커스텀 AssetManager 클래스 지정
+
+![](D1%20Study_assets/2025-03-02-18-32-17-image.png)
+
+- LyraPawnData는 나중에 데이터 파일을 만들어서 에디터 상에서 이것저것 연결해 준 그 파일이랑 연관성이 있는데 그것을 런타임에 로딩해가지고 에셋 매니저가 들고 있음 -> 그게 여기저기서 많이 사용이 될 것이어서 GetDefaultPawnData()라는 getter 함수를 하나 파둠
+
+![](D1%20Study_assets/2025-03-02-18-37-10-image.png)
+
+- **AssetManager 제약**:
+  - 모든 데이터 파일을 관리할 수 있는 것은 아님
+  - 특정 클래스 계층 구조를 따르는 자산만 관리
+- **클래스 계층 구조**:
+  1. **DataAsset** (기본 클래스)
+     - 에디터에서 데이터 파일을 생성하고 설정할 수 있는 기본 기능 제공
+  2. **PrimaryDataAsset** (DataAsset 상속)
+     - DataAsset에 추가 기능이 확장된 클래스
+     - 핵심 기능: `getPrimaryAssetId()` - 자산에 고유 식별자 부여
+     - 이 식별자를 통해 AssetManager가 로딩/언로딩 관리 가능
+  3. **LyraPawnData 등** (PrimaryDataAsset 상속)
+     - 게임 특화 데이터 자산 클래스들
+- **중요 사항**:
+  - 자산을 만들었다고 해서 자동으로 관리되는 것이 아님
+  - AssetManager의 관찰 대상이 되도록 별도 등록 필요
+  - 등록된 자산만 AssetManager가 효율적으로 로딩/언로딩 관리
+  - `PrimaryDataAsset`을 상속받은 클래스들만 `getPrimaryAssetId()`를 통해 고유 식별자를 가질 수 있습니다.
+  - 이 고유 식별자는 AssetManager에 해당 에셋을 "관찰 대상"으로 등록하는 데 사용됩니다.
+- 참고) **FPrimaryAssetId 구조**
+  - `FPrimaryAssetId`는 두 부분으로 구성됩니다:
+    - `PrimaryAssetType`: 자산의 유형(Type)을 나타내는 이름
+    - `PrimaryAssetName`: 특정 자산의 고유 이름(Name)
+- **에셋 관리 설정 위치**:
+  1. **Project Settings의 AssetManager**
+     - 프로젝트 전체에서 공통으로 사용되는 에셋들을 관리
+     - 기본적인 에셋 유형 및 스캔 경로 설정
+     - 모든 게임 모듈에서 접근 가능한 에셋 등록
+  2. **GameFeatureData의 AssetManager**
+     - 특정 플러그인이나 게임 피처에 속한 에셋 관리
+     - 플러그인이 활성화될 때만 로드되는 에셋 등록
+     - 모듈화된 기능에 대한 독립적인 에셋 관리
