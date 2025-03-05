@@ -5,6 +5,7 @@
 #include "LyraGameplayTags.h"
 #include "LyraGameData.h"
 #include "Data/D1CharacterData.h"
+#include "Data/D1ItemData.h"
 #include "AbilitySystemGlobals.h"
 #include "Character/LyraPawnData.h"
 #include "Misc/App.h"
@@ -117,6 +118,7 @@ void ULyraAssetManager::StartInitialLoading()
 		// Load base game data asset
 		STARTUP_JOB_WEIGHTED(GetGameData(), 25.f);
 		STARTUP_JOB_WEIGHTED(GetCharacterData(), 25.f);
+		STARTUP_JOB_WEIGHTED(GetItemData(), 25.f);
 	}
 
 	// Run all the queued up startup jobs
@@ -146,6 +148,11 @@ const ULyraPawnData* ULyraAssetManager::GetDefaultPawnData() const
 const UD1CharacterData& ULyraAssetManager::GetCharacterData()
 {
 	return GetOrLoadTypedGameData<UD1CharacterData>(CharacterDataPath);
+}
+
+const UD1ItemData& ULyraAssetManager::GetItemData()
+{
+	return GetOrLoadTypedGameData<UD1ItemData>(ItemDataPath);
 }
 
 UPrimaryDataAsset* ULyraAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType PrimaryAssetType)

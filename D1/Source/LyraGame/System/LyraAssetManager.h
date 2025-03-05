@@ -12,6 +12,7 @@ class UPrimaryDataAsset;
 class ULyraGameData;
 class ULyraPawnData;
 class UD1CharacterData;
+class UD1ItemData;
 
 struct FLyraBundles
 {
@@ -52,6 +53,7 @@ public:
 	const ULyraGameData& GetGameData();
 	const ULyraPawnData* GetDefaultPawnData() const;
 	const UD1CharacterData& GetCharacterData();
+	const UD1ItemData& GetItemData();
 
 protected:
 	template <typename GameDataClass>
@@ -98,6 +100,9 @@ protected:
 
 	UPROPERTY(Config)
 	TSoftObjectPtr<UD1CharacterData> CharacterDataPath;
+
+	UPROPERTY(Config)
+	TSoftObjectPtr<UD1ItemData> ItemDataPath;
 
 private:
 	// Flushes the StartupJobs array. Processes all startup work.
