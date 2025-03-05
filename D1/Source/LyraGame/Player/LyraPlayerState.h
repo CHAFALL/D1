@@ -6,7 +6,7 @@
 #include "ModularPlayerState.h"
 #include "System/GameplayTagStack.h"
 #include "Teams/LyraTeamAgentInterface.h"
-
+#include "D1Define.h"
 #include "LyraPlayerState.generated.h"
 
 struct FLyraVerbMessage;
@@ -181,4 +181,13 @@ private:
 
 	UFUNCTION()
 	void OnRep_MySquadID();
+
+public:
+	// Reliable : 반드시 실행이 되어야 되므로
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void Server_SelectClass(ECharacterClassType ClassType);
+
+public:
+	UPROPERTY(Replicated)
+	ECharacterClassType CharacterClassType = ECharacterClassType::Count;
 };
