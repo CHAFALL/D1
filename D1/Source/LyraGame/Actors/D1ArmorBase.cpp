@@ -63,7 +63,7 @@ void AD1ArmorBase::SetArmorMesh(TSoftObjectPtr<USkeletalMesh> InArmorMesh)
 	{
 		// 여기서 메모리 관리를 어떻게 할지를 고민해볼 필요가 있음.
 		// GetAsset() 한번 타고 들어가보기
-		LoadedArmorMesh = ULyraAssetManager::GetAsset<USkeletalMesh>(InArmorMesh);
+		LoadedArmorMesh = ULyraAssetManager::GetAssetByPath<USkeletalMesh>(InArmorMesh);
 	}
 	
 	// 해당 메쉬 설정하는 부분
@@ -72,7 +72,7 @@ void AD1ArmorBase::SetArmorMesh(TSoftObjectPtr<USkeletalMesh> InArmorMesh)
 
 	if (SkinMaterialSlotName.IsNone() == false && SkinMaterial.IsNull() == false)
 	{
-		UMaterialInterface* LoadedMaterial = ULyraAssetManager::GetAsset<UMaterialInterface>(SkinMaterial);
+		UMaterialInterface* LoadedMaterial = ULyraAssetManager::GetAssetByPath<UMaterialInterface>(SkinMaterial);
 		ArmorMeshComponent->SetMaterialByName(SkinMaterialSlotName, LoadedMaterial);
 	}
 }

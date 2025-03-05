@@ -119,7 +119,7 @@ void UD1CosmeticManagerComponent::SetPrimaryArmorMesh(EArmorType ArmorType, TSof
 			}
 			else
 			{
-				USkeletalMesh* ArmorMesh = ULyraAssetManager::GetAsset<USkeletalMesh>(ArmorMeshPtr);
+				USkeletalMesh* ArmorMesh = ULyraAssetManager::GetAssetByPath<USkeletalMesh>(ArmorMeshPtr);
 				CosmeticActor->SetPrimaryArmorMesh(ArmorMesh);
 			}
 		}

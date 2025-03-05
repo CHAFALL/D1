@@ -96,12 +96,6 @@ public:
 	virtual FOnLyraTeamIndexChangedDelegate* GetOnTeamIndexChangedDelegate() override;
 	//~End of ILyraTeamAgentInterface interface
 
-	UFUNCTION(BlueprintCallable, Category = "Lyra|Character")
-	void SetIsAutoRunning(const bool bEnabled);
-
-	UFUNCTION(BlueprintCallable, Category = "Lyra|Character")
-	bool GetIsAutoRunning() const;
-
 private:
 	UPROPERTY()
 	FOnLyraTeamIndexChangedDelegate OnTeamChangedDelegate;
@@ -127,15 +121,6 @@ protected:
 	//~End of APlayerController interface
 
 	void OnSettingsChanged(ULyraSettingsShared* Settings);
-	
-	void OnStartAutoRun();
-	void OnEndAutoRun();
-
-	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnStartAutoRun"))
-	void K2_OnStartAutoRun();
-
-	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnEndAutoRun"))
-	void K2_OnEndAutoRun();
 
 	bool bHideViewTargetPawnNextFrame = false;
 };

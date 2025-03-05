@@ -5,6 +5,7 @@
 #include "Engine/AssetManager.h"
 #include "LyraAssetManagerStartupJob.h"
 #include "Templates/SubclassOf.h"
+#include "Data/D1AssetData.h"
 #include "LyraAssetManager.generated.h"
 
 class UPrimaryDataAsset;
@@ -13,6 +14,8 @@ class ULyraGameData;
 class ULyraPawnData;
 class UD1CharacterData;
 class UD1ItemData;
+class UD1ClassData;
+class UD1AssetData;
 
 struct FLyraBundles
 {
@@ -39,13 +42,17 @@ public:
 	// Returns the AssetManager singleton object.
 	static ULyraAssetManager& Get();
 
-	// Returns the asset referenced by a TSoftObjectPtr.  This will synchronously load the asset if it's not already loaded.
 	template<typename AssetType>
-	static AssetType* GetAsset(const TSoftObjectPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
+	static AssetType* GetAssetByPath(const TSoftObjectPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
-	// Returns the subclass referenced by a TSoftClassPtr.  This will synchronously load the asset if it's not already loaded.
 	template<typename AssetType>
-	static TSubclassOf<AssetType> GetSubclass(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
+	static AssetType* GetAssetByName(const FName& AssetName, bool bKeepInMemory = true);
+
+	template<typename AssetType>
+	static TSubclassOf<AssetType> GetSubclassByPath(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
+
+	template<typename AssetType>
+	static TSubclassOf<AssetType> GetSubclassByName(const FName& AssetName, bool bKeepInMemory = true);
 
 	// Logs all assets currently loaded and tracked by the asset manager.
 	static void DumpLoadedAssets();
@@ -54,6 +61,8 @@ public:
 	const ULyraPawnData* GetDefaultPawnData() const;
 	const UD1CharacterData& GetCharacterData();
 	const UD1ItemData& GetItemData();
+	const UD1ClassData& GetClassData();
+	const UD1AssetData& GetAssetData();
 
 protected:
 	template <typename GameDataClass>
@@ -104,6 +113,12 @@ protected:
 	UPROPERTY(Config)
 	TSoftObjectPtr<UD1ItemData> ItemDataPath;
 
+	UPROPERTY(Config)
+	TSoftObjectPtr<UD1ClassData> ClassDataPath;
+
+	UPROPERTY(Config)
+	TSoftObjectPtr<UD1AssetData> AssetDataPath;
+
 private:
 	// Flushes the StartupJobs array. Processes all startup work.
 	void DoAllStartupJobs();
@@ -128,8 +143,12 @@ private:
 };
 
 
+// 보면 TSoftObjectPtr, TSoftClassPtr로 경로를 받아와서 해당 에셋을 갖고 오는 기능을 이용 중인데
+// 경우에 따라서 모든 것을 다 경로로 관리하면 조금 복잡할 것임.
+// -> Key, Value 값을 통해 에셋을 관리하면 조금 더 편리하게 관리할 수 있지 않을까? (ex. 유니티의 addressable)
+// key : 이름, value : 경로가 될 듯? (그럼 key 값으로만 에셋을 찾을 수 있을 것이다)
 template<typename AssetType>
-AssetType* ULyraAssetManager::GetAsset(const TSoftObjectPtr<AssetType>& AssetPointer, bool bKeepInMemory)
+AssetType* ULyraAssetManager::GetAssetByPath(const TSoftObjectPtr<AssetType>& AssetPointer, bool bKeepInMemory)
 {
 	AssetType* LoadedAsset = nullptr;
 
@@ -154,8 +173,17 @@ AssetType* ULyraAssetManager::GetAsset(const TSoftObjectPtr<AssetType>& AssetPoi
 	return LoadedAsset;
 }
 
+template <typename AssetType>
+AssetType* ULyraAssetManager::GetAssetByName(const FName& AssetName, bool bKeepInMemory)
+{
+	const UD1AssetData& AssetData = Get().GetAssetData();
+	const FSoftObjectPath& AssetPath = AssetData.GetAssetPathByName(AssetName);
+	TSoftObjectPtr<AssetType> AssetPtr(AssetPath);
+	return GetAssetByPath<AssetType>(AssetPtr, bKeepInMemory);
+}
+
 template<typename AssetType>
-TSubclassOf<AssetType> ULyraAssetManager::GetSubclass(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory)
+TSubclassOf<AssetType> ULyraAssetManager::GetSubclassByPath(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory)
 {
 	TSubclassOf<AssetType> LoadedSubclass;
 
@@ -178,4 +206,18 @@ TSubclassOf<AssetType> ULyraAssetManager::GetSubclass(const TSoftClassPtr<AssetT
 	}
 
 	return LoadedSubclass;
+}
+
+template <typename AssetType>
+TSubclassOf<AssetType> ULyraAssetManager::GetSubclassByName(const FName& AssetName, bool bKeepInMemory)
+{
+	const UD1AssetData& AssetData = Get().GetAssetData();
+	const FSoftObjectPath& AssetPath = AssetData.GetAssetPathByName(AssetName);
+
+	FString AssetPathString = AssetPath.GetAssetPathString();
+	AssetPathString.Append(TEXT("_C"));
+
+	FSoftClassPath ClassPath(AssetPathString);
+	TSoftClassPtr<AssetType> ClassPtr(ClassPath);
+	return GetSubclassByPath<AssetType>(ClassPtr, bKeepInMemory);
 }

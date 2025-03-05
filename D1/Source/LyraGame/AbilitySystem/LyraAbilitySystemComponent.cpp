@@ -489,7 +489,7 @@ void ULyraAbilitySystemComponent::CancelActivationGroupAbilities(ELyraAbilityAct
 
 void ULyraAbilitySystemComponent::AddDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {
-	const TSubclassOf<UGameplayEffect> DynamicTagGE = ULyraAssetManager::GetSubclass(ULyraGameData::Get().DynamicTagGameplayEffect);
+	const TSubclassOf<UGameplayEffect> DynamicTagGE = ULyraAssetManager::GetSubclassByPath(ULyraGameData::Get().DynamicTagGameplayEffect);
 	if (!DynamicTagGE)
 	{
 		UE_LOG(LogLyraAbilitySystem, Warning, TEXT("AddDynamicTagGameplayEffect: Unable to find DynamicTagGameplayEffect [%s]."), *ULyraGameData::Get().DynamicTagGameplayEffect.GetAssetName());
@@ -512,7 +512,7 @@ void ULyraAbilitySystemComponent::AddDynamicTagGameplayEffect(const FGameplayTag
 
 void ULyraAbilitySystemComponent::RemoveDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {
-	const TSubclassOf<UGameplayEffect> DynamicTagGE = ULyraAssetManager::GetSubclass(ULyraGameData::Get().DynamicTagGameplayEffect);
+	const TSubclassOf<UGameplayEffect> DynamicTagGE = ULyraAssetManager::GetSubclassByPath(ULyraGameData::Get().DynamicTagGameplayEffect);
 	if (!DynamicTagGE)
 	{
 		UE_LOG(LogLyraAbilitySystem, Warning, TEXT("RemoveDynamicTagGameplayEffect: Unable to find gameplay effect [%s]."), *ULyraGameData::Get().DynamicTagGameplayEffect.GetAssetName());
