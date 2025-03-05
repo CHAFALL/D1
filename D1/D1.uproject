@@ -5,7 +5,7 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "LyraGame",
+			"Name": "D1Game",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
@@ -14,7 +14,7 @@
 			]
 		},
 		{
-			"Name": "LyraEditor",
+			"Name": "D1Editor",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
