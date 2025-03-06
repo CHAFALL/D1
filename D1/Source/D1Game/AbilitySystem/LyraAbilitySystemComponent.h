@@ -16,6 +16,8 @@ struct FFrame;
 struct FGameplayAbilityTargetDataHandle;
 
 D1GAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityChangedDelegate, FGameplayAbilitySpecHandle, bool/*bGiven*/);
+
 
 /**
  * ULyraAbilitySystemComponent
@@ -103,4 +105,8 @@ protected:
 
 	// Number of abilities running in each activation group.
 	int32 ActivationGroupCounts[(uint8)ELyraAbilityActivationGroup::MAX];
+
+public:
+	FTimerHandle BlockAnimMontageTimerHandle;
+	FAbilityChangedDelegate AbilityChangedDelegate;
 };

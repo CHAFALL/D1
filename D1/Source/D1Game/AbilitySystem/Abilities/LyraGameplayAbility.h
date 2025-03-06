@@ -10,6 +10,7 @@ struct FGameplayAbilityActivationInfo;
 struct FGameplayAbilitySpec;
 struct FGameplayAbilitySpecHandle;
 
+class UInputMappingContext;
 class AActor;
 class AController;
 class ALyraCharacter;
@@ -210,4 +211,17 @@ protected:
 
 	// Current camera mode set by the ability.
 	TSubclassOf<ULyraCameraMode> ActiveCameraMode;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "D1|Ability")
+	TObjectPtr<UInputMappingContext> InputMappingContext;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "D1|Ability")
+	TObjectPtr<UTexture2D> Icon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "D1|Ability")
+	FText Name;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "D1|Ability")
+	FText Description;
 };

@@ -107,4 +107,11 @@ protected:
 	void ApplySetByCallerHeal(ULyraAbilitySystemComponent* LyraASC, float HealAmount);
 
 	ULyraAbilitySystemComponent* GetPlayerAbilitySystemComponent() const;
+
+public:
+	float CurrentAnimationSpeed = 1.0f;
+	float DeltaAnimationSpeed = 0.1f;
+
+	UPROPERTY()
+	TSoftObjectPtr<UAnimMontage> SelectedMontage;
 };

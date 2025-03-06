@@ -8,6 +8,7 @@
 #include "Data/D1ItemData.h"
 #include "Data/D1ClassData.h"
 #include "Data/D1AssetData.h"
+#include "Data/D1CheatData.h"
 #include "AbilitySystemGlobals.h"
 #include "Character/LyraPawnData.h"
 #include "Misc/App.h"
@@ -123,6 +124,7 @@ void ULyraAssetManager::StartInitialLoading()
 		STARTUP_JOB_WEIGHTED(GetItemData(), 25.f);
 		//STARTUP_JOB_WEIGHTED(GetClassData(), 25.f);
 		//STARTUP_JOB_WEIGHTED(GetAssetData(), 25.f);
+		//STARTUP_JOB_WEIGHTED(GetUIData(), 25.f);
 	}
 
 	// Run all the queued up startup jobs
@@ -167,6 +169,16 @@ const UD1ClassData& ULyraAssetManager::GetClassData()
 const UD1AssetData& ULyraAssetManager::GetAssetData()
 {
 	return GetOrLoadTypedGameData<UD1AssetData>(AssetDataPath);
+}
+
+const UD1UIData& ULyraAssetManager::GetUIData()
+{
+	return GetOrLoadTypedGameData<UD1UIData>(UIDataPath);
+}
+
+const UD1CheatData& ULyraAssetManager::GetCheatData()
+{
+	return GetOrLoadTypedGameData<UD1CheatData>(CheatDataPath);
 }
 
 UPrimaryDataAsset* ULyraAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType PrimaryAssetType)
