@@ -1,9 +1,9 @@
-﻿#pragma once
+#pragma once
 
 #include "D1ItemFragment_Equipable.h"
 #include "D1ItemFragment_Equipable_Attachment.generated.h"
 
-//class AD1EquipmentBase;
+class AD1EquipmentBase;
 
 USTRUCT(BlueprintType)
 struct FD1WeaponAttachInfo
@@ -11,8 +11,8 @@ struct FD1WeaponAttachInfo
 	GENERATED_BODY()
 
 public:
-	//UPROPERTY(EditDefaultsOnly)
-	//TSubclassOf<AD1EquipmentBase> SpawnWeaponClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AD1EquipmentBase> SpawnWeaponClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	FName AttachSocket;

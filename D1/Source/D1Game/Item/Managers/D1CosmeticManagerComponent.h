@@ -5,7 +5,7 @@
 #include "D1CosmeticManagerComponent.generated.h"
 
 class AD1ArmorBase;
-//class UD1ItemFragment_Equipable_Armor;
+class UD1ItemFragment_Equipable_Armor;
 
 // Manager이긴 하지만 PawnComponent로 만듬 - 모든 유저들마다 자기만의 Manager를 갖고 있어야 되는 경우 이렇게 Component를 만들어가지고 붙이는 경우가 많음
 UCLASS(BlueprintType, Blueprintable)
@@ -21,7 +21,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 public:
-	void RefreshArmorMesh(EArmorType ArmorType /*, const UD1ItemFragment_Equipable_Armor* ArmorFragment*/);
+	void RefreshArmorMesh(EArmorType ArmorType, const UD1ItemFragment_Equipable_Armor* ArmorFragment);
 	void GetMeshComponents(TArray<UMeshComponent*>& OutMeshComponents) const;
 
 private:

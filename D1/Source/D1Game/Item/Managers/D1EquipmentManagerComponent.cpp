@@ -1,6 +1,6 @@
-﻿#include "D1EquipmentManagerComponent.h"
+#include "D1EquipmentManagerComponent.h"
 
-//#include "D1EquipManagerComponent.h"
+#include "D1EquipManagerComponent.h"
 //#include "D1InventoryManagerComponent.h"
 //#include "D1ItemManagerComponent.h"
 #include "Character/LyraCharacter.h"
@@ -19,9 +19,9 @@ void FD1EquipmentEntry::Init(UD1ItemInstance* InItemInstance, int32 InItemCount)
 {
 	check(InItemInstance && InItemCount > 0);
 
-	/*UD1EquipManagerComponent* EquipManager = EquipmentManager->GetEquipManager();
+	UD1EquipManagerComponent* EquipManager = EquipmentManager->GetEquipManager();
 	if (EquipManager == nullptr)
-		return;*/
+		return;
 
 	const UD1ItemFragment_Equipable* EquippableFragment = InItemInstance->FindFragmentByClass<UD1ItemFragment_Equipable>();
 	if (EquippableFragment == nullptr)
@@ -29,7 +29,7 @@ void FD1EquipmentEntry::Init(UD1ItemInstance* InItemInstance, int32 InItemCount)
 	
 	if (ItemInstance)
 	{
-		//EquipManager->Unequip(EquipmentSlotType);
+		EquipManager->Unequip(EquipmentSlotType);
 	}
 	
 	ItemInstance = InItemInstance;
@@ -37,30 +37,30 @@ void FD1EquipmentEntry::Init(UD1ItemInstance* InItemInstance, int32 InItemCount)
 	const UD1ItemTemplate& ItemTemplate = UD1ItemData::Get().FindItemTemplateByID(ItemInstance->GetItemTemplateID());
 	ItemCount = FMath::Clamp(InItemCount, 1, ItemTemplate.MaxStackCount);
 	
-	//if (EquippableFragment->EquipmentType == EEquipmentType::Armor || EquipmentManager->IsSameEquipState(EquipmentSlotType, EquipManager->GetCurrentEquipState()))
+	if (EquippableFragment->EquipmentType == EEquipmentType::Armor || EquipmentManager->IsSameEquipState(EquipmentSlotType, EquipManager->GetCurrentEquipState()))
 	{
-		//EquipManager->Equip(EquipmentSlotType, ItemInstance);
+		EquipManager->Equip(EquipmentSlotType, ItemInstance);
 	}
 }
 
 UD1ItemInstance* FD1EquipmentEntry::Reset()
 {
-	/*UD1EquipManagerComponent* EquipManager = EquipmentManager->GetEquipManager();
+	UD1EquipManagerComponent* EquipManager = EquipmentManager->GetEquipManager();
 	if (EquipManager == nullptr)
-		return nullptr;*/
+		return nullptr;
 
 	if (ItemInstance)
 	{
-		//EquipManager->Unequip(EquipmentSlotType);
+		EquipManager->Unequip(EquipmentSlotType);
 	}
 	
 	UD1ItemInstance* RemovedItemInstance = ItemInstance;
 	ItemInstance = nullptr;
 	ItemCount = 0;
 	
-	//if (EquipmentManager->IsAllEmpty(EquipManager->GetCurrentEquipState()))
+	if (EquipmentManager->IsAllEmpty(EquipManager->GetCurrentEquipState()))
 	{
-		//EquipManager->ChangeEquipState(EEquipState::Unarmed);
+		EquipManager->ChangeEquipState(EEquipState::Unarmed);
 	}
 	
 	return RemovedItemInstance;
@@ -285,6 +285,7 @@ void UD1EquipmentManagerComponent::AddEquipment_Unsafe(EEquipmentSlotType Equipm
 	}
 }
 
+// (good)
 void UD1EquipmentManagerComponent::SetEquipment(EEquipmentSlotType EquipmentSlotType, TSubclassOf<UD1ItemTemplate> ItemTemplateClass, EItemRarity ItemRarity, int32 ItemCount)
 {
 	check(HasAuthority());
@@ -348,15 +349,17 @@ void UD1EquipmentManagerComponent::SetEquipment(EEquipmentSlotType EquipmentSlot
 
 	if (IsWeaponSlot(EquipmentSlotType))
 	{
-		/*if (UD1EquipManagerComponent* EquipManager = GetEquipManager())
+		// 핵심
+		if (UD1EquipManagerComponent* EquipManager = GetEquipManager())
 		{
 			EWeaponSlotType WeaponSlotType = UD1EquipManagerComponent::ConvertToWeaponSlotType(EquipmentSlotType);
 			EEquipState EquipState = UD1EquipManagerComponent::ConvertToEquipState(WeaponSlotType);
 			if (EquipManager->GetCurrentEquipState() != EquipState)
 			{
+				// 핵심
 				EquipManager->ChangeEquipState(EquipState);
 			}
-		}*/
+		}
 	}
 }
 
@@ -477,9 +480,9 @@ const UD1ItemInstance* UD1EquipmentManagerComponent::FindPairItemInstance(const 
 	}
 	else if (BaseEquippableFragment->EquipmentType == EEquipmentType::Armor)
 	{
-		/*const UD1ItemFragment_Equipable_Armor* BaseArmorFragment = Cast<UD1ItemFragment_Equipable_Armor>(BaseEquippableFragment);
+		const UD1ItemFragment_Equipable_Armor* BaseArmorFragment = Cast<UD1ItemFragment_Equipable_Armor>(BaseEquippableFragment);
 		OutEquipmentSlotType = UD1EquipManagerComponent::ConvertToEquipmentSlotType(BaseArmorFragment->ArmorType);
-		SelectedItemInstance = GetItemInstance(OutEquipmentSlotType);*/
+		SelectedItemInstance = GetItemInstance(OutEquipmentSlotType);
 	}
 
 	if (InBaseItemInstance == SelectedItemInstance)
@@ -499,7 +502,7 @@ bool UD1EquipmentManagerComponent::IsAllEmpty(EEquipState EquipState) const
 		return false;
 
 	bool bAllEmpty = true;
-	/*for (EEquipmentSlotType SlotType : UD1EquipManagerComponent::GetEquipmentSlotsByEquipState(EquipState))
+	for (EEquipmentSlotType SlotType : UD1EquipManagerComponent::GetEquipmentSlotsByEquipState(EquipState))
 	{
 		const FD1EquipmentEntry& Entry = EquipmentList.Entries[(int32)SlotType];
 		if (Entry.ItemInstance)
@@ -507,7 +510,7 @@ bool UD1EquipmentManagerComponent::IsAllEmpty(EEquipState EquipState) const
 			bAllEmpty = false;
 			break;
 		}
-	}*/
+	}
 	return bAllEmpty;
 }
 
@@ -523,6 +526,16 @@ ALyraPlayerController* UD1EquipmentManagerComponent::GetPlayerController() const
 		return LyraCharacter->GetLyraPlayerController();
 	}
 	return nullptr;
+}
+
+UD1EquipManagerComponent* UD1EquipmentManagerComponent::GetEquipManager() const
+{
+	UD1EquipManagerComponent* EquipManager = nullptr;
+	if (ALyraCharacter* Character = GetCharacter())
+	{
+		EquipManager = Character->FindComponentByClass<UD1EquipManagerComponent>();
+	}
+	return EquipManager;
 }
 
 UD1ItemInstance* UD1EquipmentManagerComponent::GetItemInstance(EEquipmentSlotType EquipmentSlotType) const
