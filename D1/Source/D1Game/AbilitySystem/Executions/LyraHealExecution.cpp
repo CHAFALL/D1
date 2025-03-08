@@ -1,8 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "LyraHealExecution.h"
-#include "AbilitySystem/Attributes/LyraHealthSet.h"
-#include "AbilitySystem/Attributes/LyraCombatSet.h"
+//#include "AbilitySystem/Attributes/LyraHealthSet.h"
+//#include "AbilitySystem/Attributes/LyraCombatSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraHealExecution)
 
@@ -13,7 +13,7 @@ struct FHealStatics
 
 	FHealStatics()
 	{
-		BaseHealDef = FGameplayEffectAttributeCaptureDefinition(ULyraCombatSet::GetBaseHealAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+		//BaseHealDef = FGameplayEffectAttributeCaptureDefinition(ULyraCombatSet::GetBaseHealAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
 };
 
@@ -49,7 +49,7 @@ void ULyraHealExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 	if (HealingDone > 0.0f)
 	{
 		// Apply a healing modifier, this gets turned into + health on the target
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(ULyraHealthSet::GetHealingAttribute(), EGameplayModOp::Additive, HealingDone));
+		//OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(ULyraHealthSet::GetHealingAttribute(), EGameplayModOp::Additive, HealingDone));
 	}
 #endif // #if WITH_SERVER_CODE
 }

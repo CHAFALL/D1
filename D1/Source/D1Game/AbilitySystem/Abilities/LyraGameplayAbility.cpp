@@ -438,6 +438,29 @@ void ULyraGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, c
 	OutAbilitySource = Cast<ILyraAbilitySourceInterface>(SourceObject);
 }
 
+void ULyraGameplayAbility::FlushPressedKeys()
+{
+	if (ALyraPlayerController* PC = GetLyraPlayerControllerFromActorInfo())
+	{
+		PC->FlushPressedKeys();
+	}
+}
+
+void ULyraGameplayAbility::FlushPressedInput(UInputAction* InputAction)
+{
+	if (CurrentActorInfo)
+	{
+		if (APlayerController* PlayerController = CurrentActorInfo->PlayerController.Get())
+		{
+			// TEMP Rookiss
+			//if (UD1EnhancedPlayerInput* PlayerInput = Cast<UD1EnhancedPlayerInput>(PlayerController->PlayerInput))
+			{
+				//PlayerInput->FlushPressedInput(InputAction);
+			}
+		}
+	}
+}
+
 void ULyraGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const
 {
 	const bool bIsPredicting = (Spec.ActivationInfo.ActivationMode == EGameplayAbilityActivationMode::Predicting);

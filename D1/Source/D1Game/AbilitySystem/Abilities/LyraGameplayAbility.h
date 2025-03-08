@@ -37,6 +37,8 @@ struct FGameplayEventData;
 UENUM(BlueprintType)
 enum class ELyraAbilityActivationPolicy : uint8
 {
+	Manual,
+
 	// Try to activate the ability when the input is triggered.
 	OnInputTriggered,
 
@@ -211,6 +213,13 @@ protected:
 
 	// Current camera mode set by the ability.
 	TSubclassOf<ULyraCameraMode> ActiveCameraMode;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void FlushPressedKeys();
+
+	UFUNCTION(BlueprintCallable)
+	void FlushPressedInput(UInputAction* InputAction);
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "D1|Ability")

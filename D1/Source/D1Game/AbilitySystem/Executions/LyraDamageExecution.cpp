@@ -1,8 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "LyraDamageExecution.h"
-#include "AbilitySystem/Attributes/LyraHealthSet.h"
-#include "AbilitySystem/Attributes/LyraCombatSet.h"
+//#include "AbilitySystem/Attributes/LyraHealthSet.h"
+//#include "AbilitySystem/Attributes/LyraCombatSet.h"
 #include "AbilitySystem/LyraGameplayEffectContext.h"
 #include "AbilitySystem/LyraAbilitySourceInterface.h"
 #include "Engine/World.h"
@@ -16,7 +16,7 @@ struct FDamageStatics
 
 	FDamageStatics()
 	{
-		BaseDamageDef = FGameplayEffectAttributeCaptureDefinition(ULyraCombatSet::GetBaseDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+		//BaseDamageDef = FGameplayEffectAttributeCaptureDefinition(ULyraCombatSet::GetBaseDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
 };
 
@@ -78,7 +78,7 @@ void ULyraDamageExecution::Execute_Implementation(const FGameplayEffectCustomExe
 	UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
 	if (!HitActor)
 	{
-		HitActor = TargetAbilitySystemComponent ? TargetAbilitySystemComponent->GetAvatarActor_Direct() : nullptr;
+		//HitActor = TargetAbilitySystemComponent ? TargetAbilitySystemComponent->GetAvatarActor_Direct() : nullptr;
 		if (HitActor)
 		{
 			ImpactLocation = HitActor->GetActorLocation();
@@ -132,7 +132,7 @@ void ULyraDamageExecution::Execute_Implementation(const FGameplayEffectCustomExe
 	if (DamageDone > 0.0f)
 	{
 		// Apply a damage modifier, this gets turned into - health on the target
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(ULyraHealthSet::GetDamageAttribute(), EGameplayModOp::Additive, DamageDone));
+		//OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(ULyraHealthSet::GetDamageAttribute(), EGameplayModOp::Additive, DamageDone));
 	}
 #endif // #if WITH_SERVER_CODE
 }
