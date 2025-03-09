@@ -44,6 +44,7 @@ public:
 
 	void CancelInputActivatedAbilities(bool bReplicateCancelAbility);
 
+	void AbilityInputTagStarted(const FGameplayTag& InputTag);
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
@@ -74,6 +75,7 @@ protected:
 
 	void TryActivateAbilitiesOnSpawn();
 
+	virtual void AbilitySecInputStarted(FGameplayAbilitySpec& Spec);
 	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
 	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
 
@@ -93,6 +95,9 @@ protected:
 	// If set, this table is used to look up tag relationships for activate and cancel
 	UPROPERTY()
 	TObjectPtr<ULyraAbilityTagRelationshipMapping> TagRelationshipMapping;
+
+	// Handles to abilities that had their input started this frame.
+	TArray<FGameplayAbilitySpecHandle> InputStartedSpecHandles;
 
 	// Handles to abilities that had their input pressed this frame.
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
