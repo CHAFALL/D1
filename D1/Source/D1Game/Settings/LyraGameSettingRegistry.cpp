@@ -9,7 +9,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraGameSettingRegistry)
 
-DEFINE_LOG_CATEGORY(LogLyraGameSettingRegistry);
+DEFINE_LOG_CATEGORY(LogD1GameSettingRegistry);
 
 #define LOCTEXT_NAMESPACE "Lyra"
 

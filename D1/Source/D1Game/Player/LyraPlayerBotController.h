@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ModularAIController.h"
-#include "Teams/LyraTeamAgentInterface.h"
+#include "Teams/D1TeamAgentInterface.h"
 
 #include "LyraPlayerBotController.generated.h"
 
@@ -21,19 +21,19 @@ struct FFrame;
  *	The controller class used by player bots in this project.
  */
 UCLASS(Blueprintable)
-class ALyraPlayerBotController : public AModularAIController, public ILyraTeamAgentInterface
+class ALyraPlayerBotController : public AModularAIController, public ID1TeamAgentInterface
 {
 	GENERATED_BODY()
 
 public:
 	ALyraPlayerBotController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	//~ILyraTeamAgentInterface interface
+	//~ID1TeamAgentInterface interface
 	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
-	virtual FOnLyraTeamIndexChangedDelegate* GetOnTeamIndexChangedDelegate() override;
+	virtual FOnD1TeamIndexChangedDelegate* GetOnTeamIndexChangedDelegate() override;
 	ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
-	//~End of ILyraTeamAgentInterface interface
+	//~End of ID1TeamAgentInterface interface
 
 	// Attempts to restart this controller (e.g., to respawn it)
 	void ServerRestartController();
@@ -65,7 +65,7 @@ protected:
 
 private:
 	UPROPERTY()
-	FOnLyraTeamIndexChangedDelegate OnTeamChangedDelegate;
+	FOnD1TeamIndexChangedDelegate OnTeamChangedDelegate;
 
 	UPROPERTY()
 	TObjectPtr<APlayerState> LastSeenPlayerState;

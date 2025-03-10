@@ -6,7 +6,7 @@
 #include "Misc/Paths.h"
 #include "Engine/World.h"
 
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -82,7 +82,7 @@ FAutoConsoleCommandWithWorldAndArgs GObjListToCollectionCmd(
 
 	// Write the collection out
 	const FString CollectionFilePath = WriteCollectionFile(CollectionName, AssetPaths);
-	UE_LOG(LogLyra, Warning, TEXT("Wrote collection of loaded assets to %s"), *CollectionFilePath);
+	UE_LOG(LogD1, Warning, TEXT("Wrote collection of loaded assets to %s"), *CollectionFilePath);
 }));
 
 #endif
@@ -95,7 +95,7 @@ void AnalyzeObjectListForDifferences(TArrayView<UObject*> ObjectList, UClass* Co
 	check(CommonClass);
 	UObject* CommonClassCDO = CommonClass->GetDefaultObject();
 
-	UE_LOG(LogLyra, Log, TEXT("  Field\tDifferentToBase\tNumValues\tValues"));
+	UE_LOG(LogD1, Log, TEXT("  Field\tDifferentToBase\tNumValues\tValues"));
 
 	for (TFieldIterator<FProperty> PropIt(CommonClass); PropIt; ++PropIt)
 	{
@@ -138,7 +138,7 @@ void AnalyzeObjectListForDifferences(TArrayView<UObject*> ObjectList, UClass* Co
 		{
 			const FString ValueList = FString::Join(ValuesObserved, TEXT(","));
 
-			UE_LOG(LogLyra, Log, TEXT("  %s::%s\t%s\t%d\t%s"),
+			UE_LOG(LogD1, Log, TEXT("  %s::%s\t%s\t%d\t%s"),
 				*CommonClass->GetName(),
 				*Prop->GetName(),
 				(ValuesObserved.Num() == 1) ? TEXT("FixedDifferent") : TEXT("Varies"),
@@ -147,7 +147,7 @@ void AnalyzeObjectListForDifferences(TArrayView<UObject*> ObjectList, UClass* Co
 		}
 		else if (bLogAllMatchedDefault)
 		{
-			UE_LOG(LogLyra, Log, TEXT("  %s::%s\t%s"), *CommonClass->GetName(), *Prop->GetName(), TEXT("Default"));
+			UE_LOG(LogD1, Log, TEXT("  %s::%s\t%s"), *CommonClass->GetName(), *Prop->GetName(), TEXT("Default"));
 		}
 	}
 }

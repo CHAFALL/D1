@@ -5,7 +5,7 @@
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "Engine/AssetManager.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Components/MeshComponent.h"
 #include "GameModes/LyraUserFacingExperienceDefinition.h"
 
@@ -27,7 +27,7 @@ TSoftObjectPtr<UObject> ULyraSystemStatics::GetTypedSoftObjectReferenceFromPrima
 			}
 			else
 			{
-				UE_LOG(LogLyra, Warning, TEXT("GetTypedSoftObjectReferenceFromPrimaryAssetId(%s, %s) - AssetBaseClassLoaded was unset so we couldn't validate it, returning null"),
+				UE_LOG(LogD1, Warning, TEXT("GetTypedSoftObjectReferenceFromPrimaryAssetId(%s, %s) - AssetBaseClassLoaded was unset so we couldn't validate it, returning null"),
 					*PrimaryAssetId.ToString(),
 					*GetPathNameSafe(*ExpectedAssetType));
 			}

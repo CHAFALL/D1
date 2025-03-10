@@ -8,7 +8,7 @@
 #include "Misc/DateTime.h"
 #include "CommonUISettings.h"
 #include "ICommonUIModule.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Player/LyraLocalPlayer.h"
 #include "Settings/LyraSettingsLocal.h"
 
@@ -119,7 +119,7 @@ void ULyraReplaySubsystem::OnEnumerateStreamsCompleteForDelete(const FEnumerateS
 		// Delete the first replay above the limit, if successful it won't be in the loop during the next loop
 		// If unsuccessful, it will stop looping
 		FString ReplayName = StreamsToDelete[DeletingReplaysNumberToKeep].Name;
-		UE_LOG(LogLyra, Log, TEXT("LyraReplaySubsystem asked to delete replay %s"), *ReplayName);
+		UE_LOG(LogD1, Log, TEXT("LyraReplaySubsystem asked to delete replay %s"), *ReplayName);
 		CurrentReplayStreamer->DeleteFinishedStream(ReplayName, LocalPlayerDeletingReplays->GetPlatformUserIndex(), FDeleteFinishedStreamCallback::CreateUObject(this, &ThisClass::OnDeleteReplay));
 	}
 	else
@@ -150,7 +150,7 @@ void ULyraReplaySubsystem::OnDeleteReplay(const FDeleteFinishedStreamResult& Del
 	{
 		// Failed, stop trying to delete anything else
 		// TODO properly integrate with platform-specific error reporting
-		UE_LOG(LogLyra, Warning, TEXT("Failed to delete replay with error %d!"), (int32)DeleteResult.Result);
+		UE_LOG(LogD1, Warning, TEXT("Failed to delete replay with error %d!"), (int32)DeleteResult.Result);
 
 		CurrentReplayStreamer = nullptr;
 		LocalPlayerDeletingReplays = nullptr;

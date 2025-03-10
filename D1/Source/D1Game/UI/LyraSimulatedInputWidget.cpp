@@ -2,7 +2,7 @@
 
 #include "UI/LyraSimulatedInputWidget.h"
 #include "EnhancedInputSubsystems.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraSimulatedInputWidget)
 
@@ -102,7 +102,7 @@ void ULyraSimulatedInputWidget::InputKeyValue(const FVector& Value)
 	}
 	else
 	{
-		UE_LOG(LogLyra, Error, TEXT("'%s' is attempting to simulate input but has no player input!"), *GetNameSafe(this));
+		UE_LOG(LogD1, Error, TEXT("'%s' is attempting to simulate input but has no player input!"), *GetNameSafe(this));
 	}
 }
 

@@ -2,7 +2,7 @@
 
 #include "LyraGameplayCueManager.h"
 #include "Engine/AssetManager.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "GameplayCueSet.h"
 #include "AbilitySystemGlobals.h"
 #include "GameplayTagsManager.h"
@@ -86,7 +86,7 @@ void ULyraGameplayCueManager::LoadAlwaysLoadedCues()
 			}
 			else
 			{
-				UE_LOG(LogLyra, Warning, TEXT("ULyraGameplayCueManager::AdditionalAlwaysLoadedCueTags contains invalid tag %s"), *CueTagName.ToString());
+				UE_LOG(LogD1, Warning, TEXT("ULyraGameplayCueManager::AdditionalAlwaysLoadedCueTags contains invalid tag %s"), *CueTagName.ToString());
 			}
 		}
 	}
@@ -128,35 +128,35 @@ void ULyraGameplayCueManager::DumpGameplayCues(const TArray<FString>& Args)
 	ULyraGameplayCueManager* GCM = Cast<ULyraGameplayCueManager>(UAbilitySystemGlobals::Get().GetGameplayCueManager());
 	if (!GCM)
 	{
-		UE_LOG(LogLyra, Error, TEXT("DumpGameplayCues failed. No ULyraGameplayCueManager found."));
+		UE_LOG(LogD1, Error, TEXT("DumpGameplayCues failed. No ULyraGameplayCueManager found."));
 		return;
 	}
 
 	const bool bIncludeRefs = Args.Contains(TEXT("Refs"));
 
-	UE_LOG(LogLyra, Log, TEXT("=========== Dumping Always Loaded Gameplay Cue Notifies ==========="));
+	UE_LOG(LogD1, Log, TEXT("=========== Dumping Always Loaded Gameplay Cue Notifies ==========="));
 	for (UClass* CueClass : GCM->AlwaysLoadedCues)
 	{
-		UE_LOG(LogLyra, Log, TEXT("  %s"), *GetPathNameSafe(CueClass));
+		UE_LOG(LogD1, Log, TEXT("  %s"), *GetPathNameSafe(CueClass));
 	}
 
-	UE_LOG(LogLyra, Log, TEXT("=========== Dumping Preloaded Gameplay Cue Notifies ==========="));
+	UE_LOG(LogD1, Log, TEXT("=========== Dumping Preloaded Gameplay Cue Notifies ==========="));
 	for (UClass* CueClass : GCM->PreloadedCues)
 	{
 		TSet<FObjectKey>* ReferencerSet = GCM->PreloadedCueReferencers.Find(CueClass);
 		int32 NumRefs = ReferencerSet ? ReferencerSet->Num() : 0;
-		UE_LOG(LogLyra, Log, TEXT("  %s (%d refs)"), *GetPathNameSafe(CueClass), NumRefs);
+		UE_LOG(LogD1, Log, TEXT("  %s (%d refs)"), *GetPathNameSafe(CueClass), NumRefs);
 		if (bIncludeRefs && ReferencerSet)
 		{
 			for (const FObjectKey& Ref : *ReferencerSet)
 			{
 				UObject* RefObject = Ref.ResolveObjectPtr();
-				UE_LOG(LogLyra, Log, TEXT("    ^- %s"), *GetPathNameSafe(RefObject));
+				UE_LOG(LogD1, Log, TEXT("    ^- %s"), *GetPathNameSafe(RefObject));
 			}
 		}
 	}
 
-	UE_LOG(LogLyra, Log, TEXT("=========== Dumping Gameplay Cue Notifies loaded on demand ==========="));
+	UE_LOG(LogD1, Log, TEXT("=========== Dumping Gameplay Cue Notifies loaded on demand ==========="));
 	int32 NumMissingCuesLoaded = 0;
 	if (GCM->RuntimeGameplayCueObjectLibrary.CueSet)
 	{
@@ -165,16 +165,16 @@ void ULyraGameplayCueManager::DumpGameplayCues(const TArray<FString>& Args)
 			if (CueData.LoadedGameplayCueClass && !GCM->AlwaysLoadedCues.Contains(CueData.LoadedGameplayCueClass) && !GCM->PreloadedCues.Contains(CueData.LoadedGameplayCueClass))
 			{
 				NumMissingCuesLoaded++;
-				UE_LOG(LogLyra, Log, TEXT("  %s"), *CueData.LoadedGameplayCueClass->GetPathName());
+				UE_LOG(LogD1, Log, TEXT("  %s"), *CueData.LoadedGameplayCueClass->GetPathName());
 			}
 		}
 	}
 
-	UE_LOG(LogLyra, Log, TEXT("=========== Gameplay Cue Notify summary ==========="));
-	UE_LOG(LogLyra, Log, TEXT("  ... %d cues in always loaded list"), GCM->AlwaysLoadedCues.Num());
-	UE_LOG(LogLyra, Log, TEXT("  ... %d cues in preloaded list"), GCM->PreloadedCues.Num());
-	UE_LOG(LogLyra, Log, TEXT("  ... %d cues loaded on demand"), NumMissingCuesLoaded);
-	UE_LOG(LogLyra, Log, TEXT("  ... %d cues in total"), GCM->AlwaysLoadedCues.Num() + GCM->PreloadedCues.Num() + NumMissingCuesLoaded);
+	UE_LOG(LogD1, Log, TEXT("=========== Gameplay Cue Notify summary ==========="));
+	UE_LOG(LogD1, Log, TEXT("  ... %d cues in always loaded list"), GCM->AlwaysLoadedCues.Num());
+	UE_LOG(LogD1, Log, TEXT("  ... %d cues in preloaded list"), GCM->PreloadedCues.Num());
+	UE_LOG(LogD1, Log, TEXT("  ... %d cues loaded on demand"), NumMissingCuesLoaded);
+	UE_LOG(LogD1, Log, TEXT("  ... %d cues in total"), GCM->AlwaysLoadedCues.Num() + GCM->PreloadedCues.Num() + NumMissingCuesLoaded);
 }
 
 void ULyraGameplayCueManager::OnGameplayTagLoaded(const FGameplayTag& Tag)
@@ -244,7 +244,7 @@ void ULyraGameplayCueManager::ProcessLoadedTags()
 		}
 		else
 		{
-			UE_LOG(LogLyra, Warning, TEXT("ULyraGameplayCueManager::OnGameplayTagLoaded processed loaded tag(s) but RuntimeGameplayCueObjectLibrary.CueSet was null. Skipping processing."));
+			UE_LOG(LogD1, Warning, TEXT("ULyraGameplayCueManager::OnGameplayTagLoaded processed loaded tag(s) but RuntimeGameplayCueObjectLibrary.CueSet was null. Skipping processing."));
 		}
 	}
 }

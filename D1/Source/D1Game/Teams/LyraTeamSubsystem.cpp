@@ -5,8 +5,8 @@
 #include "AbilitySystemGlobals.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/Pawn.h"
-#include "LyraLogChannels.h"
-#include "LyraTeamAgentInterface.h"
+#include "D1LogChannels.h"
+#include "D1TeamAgentInterface.h"
 #include "LyraTeamCheats.h"
 #include "LyraTeamPrivateInfo.h"
 #include "LyraTeamPublicInfo.h"
@@ -139,7 +139,7 @@ bool ULyraTeamSubsystem::ChangeTeamForActor(AActor* ActorToChange, int32 NewTeam
 		LyraPS->SetGenericTeamId(NewTeamID);
 		return true;
 	}
-	else if (ILyraTeamAgentInterface* TeamActor = Cast<ILyraTeamAgentInterface>(ActorToChange))
+	else if (ID1TeamAgentInterface* TeamActor = Cast<ID1TeamAgentInterface>(ActorToChange))
 	{
 		TeamActor->SetGenericTeamId(NewTeamID);
 		return true;
@@ -153,7 +153,7 @@ bool ULyraTeamSubsystem::ChangeTeamForActor(AActor* ActorToChange, int32 NewTeam
 int32 ULyraTeamSubsystem::FindTeamFromObject(const UObject* TestObject) const
 {
 	// See if it's directly a team agent
-	if (const ILyraTeamAgentInterface* ObjectWithTeamInterface = Cast<ILyraTeamAgentInterface>(TestObject))
+	if (const ID1TeamAgentInterface* ObjectWithTeamInterface = Cast<ID1TeamAgentInterface>(TestObject))
 	{
 		return GenericTeamIdToInteger(ObjectWithTeamInterface->GetGenericTeamId());
 	}
@@ -161,7 +161,7 @@ int32 ULyraTeamSubsystem::FindTeamFromObject(const UObject* TestObject) const
 	if (const AActor* TestActor = Cast<const AActor>(TestObject))
 	{
 		// See if the instigator is a team actor
-		if (const ILyraTeamAgentInterface* InstigatorWithTeamInterface = Cast<ILyraTeamAgentInterface>(TestActor->GetInstigator()))
+		if (const ID1TeamAgentInterface* InstigatorWithTeamInterface = Cast<ID1TeamAgentInterface>(TestActor->GetInstigator()))
 		{
 			return GenericTeamIdToInteger(InstigatorWithTeamInterface->GetGenericTeamId());
 		}
@@ -251,7 +251,7 @@ void ULyraTeamSubsystem::AddTeamTagStack(int32 TeamId, FGameplayTag Tag, int32 S
 {
 	auto FailureHandler = [&](const FString& ErrorMessage)
 	{
-		UE_LOG(LogLyraTeams, Error, TEXT("AddTeamTagStack(TeamId: %d, Tag: %s, StackCount: %d) %s"), TeamId, *Tag.ToString(), StackCount, *ErrorMessage);
+		UE_LOG(LogD1Teams, Error, TEXT("AddTeamTagStack(TeamId: %d, Tag: %s, StackCount: %d) %s"), TeamId, *Tag.ToString(), StackCount, *ErrorMessage);
 	};
 
 	if (FLyraTeamTrackingInfo* Entry = TeamMap.Find(TeamId))
@@ -282,7 +282,7 @@ void ULyraTeamSubsystem::RemoveTeamTagStack(int32 TeamId, FGameplayTag Tag, int3
 {
 	auto FailureHandler = [&](const FString& ErrorMessage)
 	{
-		UE_LOG(LogLyraTeams, Error, TEXT("RemoveTeamTagStack(TeamId: %d, Tag: %s, StackCount: %d) %s"), TeamId, *Tag.ToString(), StackCount, *ErrorMessage);
+		UE_LOG(LogD1Teams, Error, TEXT("RemoveTeamTagStack(TeamId: %d, Tag: %s, StackCount: %d) %s"), TeamId, *Tag.ToString(), StackCount, *ErrorMessage);
 	};
 
 	if (FLyraTeamTrackingInfo* Entry = TeamMap.Find(TeamId))
@@ -319,7 +319,7 @@ int32 ULyraTeamSubsystem::GetTeamTagStackCount(int32 TeamId, FGameplayTag Tag) c
 	}
 	else
 	{
-		UE_LOG(LogLyraTeams, Verbose, TEXT("GetTeamTagStackCount(TeamId: %d, Tag: %s) failed because it was passed an unknown team id"), TeamId, *Tag.ToString());
+		UE_LOG(LogD1Teams, Verbose, TEXT("GetTeamTagStackCount(TeamId: %d, Tag: %s) failed because it was passed an unknown team id"), TeamId, *Tag.ToString());
 		return 0;
 	}
 }

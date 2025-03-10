@@ -10,17 +10,17 @@
 #include "GameFramework/HUD.h"
 #include "System/LyraAssetManager.h"
 #include "System/LyraGameData.h"
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Character/LyraHealthComponent.h"
 #include "Character/LyraPawnExtensionComponent.h"
 #include "System/LyraSystemStatics.h"
-#include "Development/LyraDeveloperSettings.h"
+#include "Development/D1DeveloperSettings.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraCheatManager)
 
-DEFINE_LOG_CATEGORY(LogLyraCheat);
+DEFINE_LOG_CATEGORY(LogD1Cheat);
 
 namespace LyraCheat
 {
@@ -55,7 +55,7 @@ void ULyraCheatManager::InitCheatManager()
 	if (GIsEditor)
 	{
 		APlayerController* PC = GetOuterAPlayerController();
-		for (const FLyraCheatToRun& CheatRow : GetDefault<ULyraDeveloperSettings>()->CheatsToRun)
+		for (const FLyraCheatToRun& CheatRow : GetDefault<UD1DeveloperSettings>()->CheatsToRun)
 		{
 			if (CheatRow.Phase == ECheatExecutionTime::OnCheatManagerCreated)
 			{
@@ -81,7 +81,7 @@ void ULyraCheatManager::CheatOutputText(const FString& TextToOutput)
 	}
 
 	// Output to log.
-	UE_LOG(LogLyraCheat, Display, TEXT("%s"), *TextToOutput);
+	UE_LOG(LogD1Cheat, Display, TEXT("%s"), *TextToOutput);
 #endif // USING_CHEAT_MANAGER
 }
 
@@ -240,7 +240,7 @@ void ULyraCheatManager::CancelActivatedAbilities()
 
 void ULyraCheatManager::AddTagToSelf(FString TagName)
 {
-	FGameplayTag Tag = LyraGameplayTags::FindTagByString(TagName, true);
+	FGameplayTag Tag = D1GameplayTags::FindTagByString(TagName, true);
 	if (Tag.IsValid())
 	{
 		if (ULyraAbilitySystemComponent* LyraASC = GetPlayerAbilitySystemComponent())
@@ -250,13 +250,13 @@ void ULyraCheatManager::AddTagToSelf(FString TagName)
 	}
 	else
 	{
-		UE_LOG(LogLyraCheat, Display, TEXT("AddTagToSelf: Could not find any tag matching [%s]."), *TagName);
+		UE_LOG(LogD1Cheat, Display, TEXT("AddTagToSelf: Could not find any tag matching [%s]."), *TagName);
 	}
 }
 
 void ULyraCheatManager::RemoveTagFromSelf(FString TagName)
 {
-	FGameplayTag Tag = LyraGameplayTags::FindTagByString(TagName, true);
+	FGameplayTag Tag = D1GameplayTags::FindTagByString(TagName, true);
 	if (Tag.IsValid())
 	{
 		if (ULyraAbilitySystemComponent* LyraASC = GetPlayerAbilitySystemComponent())
@@ -266,7 +266,7 @@ void ULyraCheatManager::RemoveTagFromSelf(FString TagName)
 	}
 	else
 	{
-		UE_LOG(LogLyraCheat, Display, TEXT("RemoveTagFromSelf: Could not find any tag matching [%s]."), *TagName);
+		UE_LOG(LogD1Cheat, Display, TEXT("RemoveTagFromSelf: Could not find any tag matching [%s]."), *TagName);
 	}
 }
 
@@ -308,7 +308,7 @@ void ULyraCheatManager::ApplySetByCallerDamage(ULyraAbilitySystemComponent* Lyra
 
 	if (SpecHandle.IsValid())
 	{
-		SpecHandle.Data->SetSetByCallerMagnitude(LyraGameplayTags::SetByCaller_IncomingDamage, DamageAmount);
+		SpecHandle.Data->SetSetByCallerMagnitude(D1GameplayTags::SetByCaller_IncomingDamage, DamageAmount);
 		LyraASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
 }
@@ -344,7 +344,7 @@ void ULyraCheatManager::ApplySetByCallerHeal(ULyraAbilitySystemComponent* LyraAS
 
 	if (SpecHandle.IsValid())
 	{
-		SpecHandle.Data->SetSetByCallerMagnitude(LyraGameplayTags::SetByCaller_IncomingHealth, HealAmount);
+		SpecHandle.Data->SetSetByCallerMagnitude(D1GameplayTags::SetByCaller_IncomingHealth, HealAmount);
 		LyraASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
 }
@@ -364,7 +364,7 @@ void ULyraCheatManager::DamageSelfDestruct()
 	{
  		if (const ULyraPawnExtensionComponent* PawnExtComp = ULyraPawnExtensionComponent::FindPawnExtensionComponent(LyraPC->GetPawn()))
 		{
-			if (PawnExtComp->HasReachedInitState(LyraGameplayTags::InitState_GameplayReady))
+			if (PawnExtComp->HasReachedInitState(D1GameplayTags::InitState_GameplayReady))
 			{
 				if (ULyraHealthComponent* HealthComponent = ULyraHealthComponent::FindHealthComponent(LyraPC->GetPawn()))
 				{
@@ -388,7 +388,7 @@ void ULyraCheatManager::God()
 
 		if (ULyraAbilitySystemComponent* LyraASC = LyraPC->GetLyraAbilitySystemComponent())
 		{
-			const FGameplayTag Tag = LyraGameplayTags::Cheat_GodMode;
+			const FGameplayTag Tag = D1GameplayTags::Cheat_GodMode;
 			const bool bHasTag = LyraASC->HasMatchingGameplayTag(Tag);
 
 			if (bHasTag)
@@ -407,7 +407,7 @@ void ULyraCheatManager::UnlimitedHealth(int32 Enabled)
 {
 	if (ULyraAbilitySystemComponent* LyraASC = GetPlayerAbilitySystemComponent())
 	{
-		const FGameplayTag Tag = LyraGameplayTags::Cheat_UnlimitedHealth;
+		const FGameplayTag Tag = D1GameplayTags::Cheat_UnlimitedHealth;
 		const bool bHasTag = LyraASC->HasMatchingGameplayTag(Tag);
 
 		if ((Enabled == -1) || ((Enabled > 0) && !bHasTag) || ((Enabled == 0) && bHasTag))

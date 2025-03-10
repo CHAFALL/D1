@@ -1,23 +1,29 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "LyraGameplayAbility.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
 #include "Player/LyraPlayerController.h"
 #include "Character/LyraCharacter.h"
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "LyraAbilityCost.h"
 #include "Character/LyraHeroComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
+#include "EnhancedInputSubsystems.h"
 #include "LyraAbilitySimpleFailureMessage.h"
+#include "NavigationSystem.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "AbilitySystem/LyraAbilitySourceInterface.h"
 #include "AbilitySystem/LyraGameplayEffectContext.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Physics/PhysicalMaterialWithTags.h"
-#include "GameFramework/PlayerState.h"
 #include "Camera/LyraCameraMode.h"
+#include "Development/D1DeveloperSettings.h"
+#include "Input/D1EnhancedPlayerInput.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Player/LyraLocalPlayer.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraGameplayAbility)
 
@@ -150,7 +156,7 @@ bool ULyraGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle H
 	{
 		if (OptionalRelevantTags)
 		{
-			OptionalRelevantTags->AddTag(LyraGameplayTags::Ability_ActivateFail_ActivationGroup);
+			OptionalRelevantTags->AddTag(D1GameplayTags::Ability_ActivateFail_ActivationGroup);
 		}
 		return false;
 	}
@@ -163,7 +169,7 @@ void ULyraGameplayAbility::SetCanBeCanceled(bool bCanBeCanceled)
 	// The ability can not block canceling if it's replaceable.
 	if (!bCanBeCanceled && (ActivationGroup == ELyraAbilityActivationGroup::Exclusive_Replaceable))
 	{
-		UE_LOG(LogLyraAbilitySystem, Error, TEXT("SetCanBeCanceled: Ability [%s] can not block canceling because its activation group is replaceable."), *GetName());
+		UE_LOG(LogD1AbilitySystem, Error, TEXT("SetCanBeCanceled: Ability [%s] can not block canceling because its activation group is replaceable."), *GetName());
 		return;
 	}
 
@@ -189,11 +195,45 @@ void ULyraGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Acto
 void ULyraGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	
+	if (InputMappingContext)
+	{
+		if (const APlayerController* PC = GetLyraPlayerControllerFromActorInfo())
+		{
+			if (const ULyraLocalPlayer* LP = Cast<ULyraLocalPlayer>(PC->GetLocalPlayer()))
+			{
+				if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+				{
+					FModifyContextOptions Options;
+					Options.bForceImmediately = true;
+					Options.bIgnoreAllPressedKeysUntilRelease = true;
+					Subsystem->AddMappingContext(InputMappingContext, 1, Options);
+				}
+			}
+		}
+	}
 }
 
 void ULyraGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	ClearCameraMode();
+
+	if (InputMappingContext)
+	{
+		if (const APlayerController* PC = GetLyraPlayerControllerFromActorInfo())
+		{
+			if (const ULyraLocalPlayer* LP = Cast<ULyraLocalPlayer>(PC->GetLocalPlayer()))
+			{
+				if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+				{
+					FModifyContextOptions Options;
+					Options.bForceImmediately = true;
+					Options.bIgnoreAllPressedKeysUntilRelease = false;
+					Subsystem->RemoveMappingContext(InputMappingContext, Options);
+				}
+			}
+		}
+	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
@@ -222,8 +262,11 @@ bool ULyraGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, co
 
 void ULyraGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
-	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
-
+	if (GIsEditor == false || GetDefault<UD1DeveloperSettings>()->bForceDisableCost == false)
+	{
+		Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
+	}
+	
 	check(ActorInfo);
 
 	// Used to determine if the ability actually hit a target (as some costs are only spent on successful attempts)
@@ -272,6 +315,18 @@ void ULyraGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, co
 			AdditionalCost->ApplyCost(this, Handle, ActorInfo, ActivationInfo);
 		}
 	}
+}
+
+void ULyraGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
+{
+	if (GIsEditor)
+	{
+		const UD1DeveloperSettings* DeveloperSettings = GetDefault<UD1DeveloperSettings>();
+		if (DeveloperSettings->bForceDisableCooldown)
+			return;
+	}
+	
+	Super::ApplyCooldown(Handle, ActorInfo, ActivationInfo);
 }
 
 FGameplayEffectContextHandle ULyraGameplayAbility::MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const
@@ -352,10 +407,10 @@ bool ULyraGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySyste
 
 		if (AbilitySystemComponentTags.HasAny(AllBlockedTags))
 		{
-			if (OptionalRelevantTags && AbilitySystemComponentTags.HasTag(LyraGameplayTags::Status_Death))
+			if (OptionalRelevantTags && AbilitySystemComponentTags.HasTag(D1GameplayTags::Status_Death))
 			{
 				// If player is dead and was rejected due to blocking tags, give that feedback
-				OptionalRelevantTags->AddTag(LyraGameplayTags::Ability_ActivateFail_IsDead);
+				OptionalRelevantTags->AddTag(D1GameplayTags::Ability_ActivateFail_IsDead);
 			}
 
 			bBlocked = true;
@@ -438,6 +493,64 @@ void ULyraGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, c
 	OutAbilitySource = Cast<ILyraAbilitySourceInterface>(SourceObject);
 }
 
+void ULyraGameplayAbility::GetMovementDirection(ED1Direction& OutDirection, FVector& OutMovementVector) const
+{
+	FVector FacingVector;
+	
+	if (ALyraCharacter* LyraCharacter = GetLyraCharacterFromActorInfo())
+	{
+		FacingVector = LyraCharacter->GetActorForwardVector();
+		
+		if (UAIBlueprintHelperLibrary::GetAIController(LyraCharacter))
+		{
+			if (UNavigationSystemV1* NavigationSystemV1 = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
+			{
+				FNavLocation OutProjectedLocation;
+				const FVector CharacterLocation = LyraCharacter->GetActorLocation();
+				const FVector QueryExtent = FVector(500.f, 500.f, 500.f);
+				NavigationSystemV1->ProjectPointToNavigation(CharacterLocation, OutProjectedLocation, QueryExtent);
+
+				FVector CharacterToProjectedXY = (OutProjectedLocation.Location - CharacterLocation) * FVector(1.f, 1.f, 0.f);
+				OutMovementVector = CharacterToProjectedXY.GetSafeNormal();
+			}
+		}
+		else
+		{
+			OutMovementVector = LyraCharacter->GetLastMovementInputVector();
+		}
+	}
+
+	const FRotator& FacingRotator = UKismetMathLibrary::Conv_VectorToRotator(FacingVector);
+	const FRotator& MovementRotator = UKismetMathLibrary::Conv_VectorToRotator(OutMovementVector);
+
+	const FRotator& DeltaRotator = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotator, FacingRotator);
+	float YawAbs = FMath::Abs(DeltaRotator.Yaw);
+
+	if (OutMovementVector.IsNearlyZero())
+	{
+		OutDirection = ED1Direction::None;
+	}
+	else
+	{
+		if (YawAbs < 60.f)
+		{
+			OutDirection = ED1Direction::Forward;
+		}
+		else if (YawAbs > 120.f)
+		{
+			OutDirection = ED1Direction::Backward;
+		}
+		else if (DeltaRotator.Yaw < 0.f)
+		{
+			OutDirection = ED1Direction::Left;
+		}
+		else
+		{
+			OutDirection = ED1Direction::Right;
+		}
+	}
+}
+
 void ULyraGameplayAbility::FlushPressedKeys()
 {
 	if (ALyraPlayerController* PC = GetLyraPlayerControllerFromActorInfo())
@@ -452,10 +565,9 @@ void ULyraGameplayAbility::FlushPressedInput(UInputAction* InputAction)
 	{
 		if (APlayerController* PlayerController = CurrentActorInfo->PlayerController.Get())
 		{
-			// TEMP Rookiss
-			//if (UD1EnhancedPlayerInput* PlayerInput = Cast<UD1EnhancedPlayerInput>(PlayerController->PlayerInput))
+			if (UD1EnhancedPlayerInput* PlayerInput = Cast<UD1EnhancedPlayerInput>(PlayerController->PlayerInput))
 			{
-				//PlayerInput->FlushPressedInput(InputAction);
+				PlayerInput->FlushPressedInput(InputAction);
 			}
 		}
 	}

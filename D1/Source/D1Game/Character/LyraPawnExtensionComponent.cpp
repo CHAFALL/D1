@@ -7,8 +7,8 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/Pawn.h"
-#include "LyraGameplayTags.h"
-#include "LyraLogChannels.h"
+#include "D1GameplayTags.h"
+#include "D1LogChannels.h"
 #include "LyraPawnData.h"
 #include "Net/UnrealNetwork.h"
 
@@ -61,7 +61,7 @@ void ULyraPawnExtensionComponent::BeginPlay()
 	BindOnActorInitStateChanged(NAME_None, FGameplayTag(), false);
 	
 	// Notifies state manager that we have spawned, then try rest of default initialization
-	ensure(TryToChangeInitState(LyraGameplayTags::InitState_Spawned));
+	ensure(TryToChangeInitState(D1GameplayTags::InitState_Spawned));
 	CheckDefaultInitialization();
 }
 
@@ -86,7 +86,7 @@ void ULyraPawnExtensionComponent::SetPawnData(const ULyraPawnData* InPawnData)
 
 	if (PawnData)
 	{
-		UE_LOG(LogLyra, Error, TEXT("Trying to set PawnData [%s] on pawn [%s] that already has valid PawnData [%s]."), *GetNameSafe(InPawnData), *GetNameSafe(Pawn), *GetNameSafe(PawnData));
+		UE_LOG(LogD1, Error, TEXT("Trying to set PawnData [%s] on pawn [%s] that already has valid PawnData [%s]."), *GetNameSafe(InPawnData), *GetNameSafe(Pawn), *GetNameSafe(PawnData));
 		return;
 	}
 
@@ -122,11 +122,11 @@ void ULyraPawnExtensionComponent::InitializeAbilitySystem(ULyraAbilitySystemComp
 	APawn* Pawn = GetPawnChecked<APawn>();
 	AActor* ExistingAvatar = InASC->GetAvatarActor();
 
-	UE_LOG(LogLyra, Verbose, TEXT("Setting up ASC [%s] on pawn [%s] owner [%s], existing [%s] "), *GetNameSafe(InASC), *GetNameSafe(Pawn), *GetNameSafe(InOwnerActor), *GetNameSafe(ExistingAvatar));
+	UE_LOG(LogD1, Verbose, TEXT("Setting up ASC [%s] on pawn [%s] owner [%s], existing [%s] "), *GetNameSafe(InASC), *GetNameSafe(Pawn), *GetNameSafe(InOwnerActor), *GetNameSafe(ExistingAvatar));
 
 	if ((ExistingAvatar != nullptr) && (ExistingAvatar != Pawn))
 	{
-		UE_LOG(LogLyra, Log, TEXT("Existing avatar (authority=%d)"), ExistingAvatar->HasAuthority() ? 1 : 0);
+		UE_LOG(LogD1, Log, TEXT("Existing avatar (authority=%d)"), ExistingAvatar->HasAuthority() ? 1 : 0);
 
 		// There is already a pawn acting as the ASC's avatar, so we need to kick it out
 		// This can happen on clients if they're lagged: their new pawn is spawned + possessed before the dead one is removed
@@ -160,7 +160,7 @@ void ULyraPawnExtensionComponent::UninitializeAbilitySystem()
 	if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
 	{
 		FGameplayTagContainer AbilityTypesToIgnore;
-		AbilityTypesToIgnore.AddTag(LyraGameplayTags::Ability_Behavior_SurvivesDeath);
+		AbilityTypesToIgnore.AddTag(D1GameplayTags::Ability_Behavior_SurvivesDeath);
 
 		AbilitySystemComponent->CancelAbilities(nullptr, &AbilityTypesToIgnore);
 		AbilitySystemComponent->ClearAbilityInput();
@@ -215,7 +215,7 @@ void ULyraPawnExtensionComponent::CheckDefaultInitialization()
 	// Before checking our progress, try progressing any other features we might depend on
 	CheckDefaultInitializationForImplementers();
 
-	static const TArray<FGameplayTag> StateChain = { LyraGameplayTags::InitState_Spawned, LyraGameplayTags::InitState_DataAvailable, LyraGameplayTags::InitState_DataInitialized, LyraGameplayTags::InitState_GameplayReady };
+	static const TArray<FGameplayTag> StateChain = { D1GameplayTags::InitState_Spawned, D1GameplayTags::InitState_DataAvailable, D1GameplayTags::InitState_DataInitialized, D1GameplayTags::InitState_GameplayReady };
 
 	// This will try to progress from spawned (which is only set in BeginPlay) through the data initialization stages until it gets to gameplay ready
 	ContinueInitStateChain(StateChain);
@@ -226,7 +226,7 @@ bool ULyraPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMana
 	check(Manager);
 
 	APawn* Pawn = GetPawn<APawn>();
-	if (!CurrentState.IsValid() && DesiredState == LyraGameplayTags::InitState_Spawned)
+	if (!CurrentState.IsValid() && DesiredState == D1GameplayTags::InitState_Spawned)
 	{
 		// As long as we are on a valid pawn, we count as spawned
 		if (Pawn)
@@ -234,7 +234,7 @@ bool ULyraPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMana
 			return true;
 		}
 	}
-	if (CurrentState == LyraGameplayTags::InitState_Spawned && DesiredState == LyraGameplayTags::InitState_DataAvailable)
+	if (CurrentState == D1GameplayTags::InitState_Spawned && DesiredState == D1GameplayTags::InitState_DataAvailable)
 	{
 		// Pawn data is required.
 		if (!PawnData)
@@ -256,12 +256,12 @@ bool ULyraPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMana
 
 		return true;
 	}
-	else if (CurrentState == LyraGameplayTags::InitState_DataAvailable && DesiredState == LyraGameplayTags::InitState_DataInitialized)
+	else if (CurrentState == D1GameplayTags::InitState_DataAvailable && DesiredState == D1GameplayTags::InitState_DataInitialized)
 	{
 		// Transition to initialize if all features have their data available
-		return Manager->HaveAllFeaturesReachedInitState(Pawn, LyraGameplayTags::InitState_DataAvailable);
+		return Manager->HaveAllFeaturesReachedInitState(Pawn, D1GameplayTags::InitState_DataAvailable);
 	}
-	else if (CurrentState == LyraGameplayTags::InitState_DataInitialized && DesiredState == LyraGameplayTags::InitState_GameplayReady)
+	else if (CurrentState == D1GameplayTags::InitState_DataInitialized && DesiredState == D1GameplayTags::InitState_GameplayReady)
 	{
 		return true;
 	}
@@ -271,7 +271,7 @@ bool ULyraPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMana
 
 void ULyraPawnExtensionComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)
 {
-	if (DesiredState == LyraGameplayTags::InitState_DataInitialized)
+	if (DesiredState == D1GameplayTags::InitState_DataInitialized)
 	{
 		// This is currently all handled by other components listening to this state change
 	}
@@ -282,7 +282,7 @@ void ULyraPawnExtensionComponent::OnActorInitStateChanged(const FActorInitStateC
 	// If another feature is now in DataAvailable, see if we should transition to DataInitialized
 	if (Params.FeatureName != NAME_ActorFeatureName)
 	{
-		if (Params.FeatureState == LyraGameplayTags::InitState_DataAvailable)
+		if (Params.FeatureState == D1GameplayTags::InitState_DataAvailable)
 		{
 			CheckDefaultInitialization();
 		}

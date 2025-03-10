@@ -14,7 +14,7 @@
 #include "GameModes/LyraExperienceManagerComponent.h"
 //@TODO: Would like to isolate this a bit better to get the pawn data in here without this having to know about other stuff
 #include "GameModes/LyraGameMode.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "LyraPlayerController.h"
 #include "Messages/LyraVerbMessage.h"
 #include "Net/UnrealNetwork.h"
@@ -120,7 +120,7 @@ void ALyraPlayerState::OnExperienceLoaded(const ULyraExperienceDefinition* /*Cur
 		}
 		else
 		{
-			UE_LOG(LogLyra, Error, TEXT("ALyraPlayerState::OnExperienceLoaded(): Unable to find PawnData to initialize player state [%s]!"), *GetNameSafe(this));
+			UE_LOG(LogD1, Error, TEXT("ALyraPlayerState::OnExperienceLoaded(): Unable to find PawnData to initialize player state [%s]!"), *GetNameSafe(this));
 		}
 	}
 }
@@ -197,7 +197,7 @@ void ALyraPlayerState::SetPawnData(const ULyraPawnData* InPawnData)
 
 	if (PawnData)
 	{
-		UE_LOG(LogLyra, Error, TEXT("Trying to set PawnData [%s] on player state [%s] that already has valid PawnData [%s]."), *GetNameSafe(InPawnData), *GetNameSafe(this), *GetNameSafe(PawnData));
+		UE_LOG(LogD1, Error, TEXT("Trying to set PawnData [%s] on player state [%s] that already has valid PawnData [%s]."), *GetNameSafe(InPawnData), *GetNameSafe(this), *GetNameSafe(PawnData));
 		return;
 	}
 
@@ -249,7 +249,7 @@ void ALyraPlayerState::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 	}
 	else
 	{
-		UE_LOG(LogLyraTeams, Error, TEXT("Cannot set team for %s on non-authority"), *GetPathName(this));
+		UE_LOG(LogD1Teams, Error, TEXT("Cannot set team for %s on non-authority"), *GetPathName(this));
 	}
 }
 
@@ -258,7 +258,7 @@ FGenericTeamId ALyraPlayerState::GetGenericTeamId() const
 	return MyTeamID;
 }
 
-FOnLyraTeamIndexChangedDelegate* ALyraPlayerState::GetOnTeamIndexChangedDelegate()
+FOnD1TeamIndexChangedDelegate* ALyraPlayerState::GetOnTeamIndexChangedDelegate()
 {
 	return &OnTeamChangedDelegate;
 }

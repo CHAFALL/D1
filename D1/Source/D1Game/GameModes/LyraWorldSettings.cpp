@@ -5,7 +5,7 @@
 #include "EngineUtils.h"
 #include "Misc/UObjectToken.h"
 #include "Logging/MessageLog.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Engine/AssetManager.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraWorldSettings)
@@ -24,7 +24,7 @@ FPrimaryAssetId ALyraWorldSettings::GetDefaultGameplayExperience() const
 
 		if (!Result.IsValid())
 		{
-			UE_LOG(LogLyraExperience, Error, TEXT("%s.DefaultGameplayExperience is %s but that failed to resolve into an asset ID (you might need to add a path to the Asset Rules in your game feature plugin or project settings"),
+			UE_LOG(LogD1Experience, Error, TEXT("%s.DefaultGameplayExperience is %s but that failed to resolve into an asset ID (you might need to add a path to the Asset Rules in your game feature plugin or project settings"),
 				*GetPathNameSafe(this), *DefaultGameplayExperience.ToString());
 		}
 	}

@@ -73,7 +73,7 @@ void ULyraSettingValueDiscreteDynamic_AudioOutputDevice::OnCompletedDeviceSwap(c
 {
 	//if (SwapResult.Result == ESwapAudioOutputDeviceResultState::Failure)
 	//{
-	//	UE_LOG(LogLyra, VeryVerbose, TEXT("AudioOutputDevice failure! Resetting to: %s"), *(OptionDisplayTexts[LastKnownGoodIndex].ToString()));
+	//	UE_LOG(LogD1, VeryVerbose, TEXT("AudioOutputDevice failure! Resetting to: %s"), *(OptionDisplayTexts[LastKnownGoodIndex].ToString()));
 	//	if (OptionValues.Num() < LastKnownGoodIndex && SwapResult.RequestedDeviceId != OptionValues[LastKnownGoodIndex])
 	//	{
 	//		SetDiscreteOptionByIndex(LastKnownGoodIndex);
@@ -106,7 +106,7 @@ void ULyraSettingValueDiscreteDynamic_AudioOutputDevice::DefaultDeviceChanged(EA
 void ULyraSettingValueDiscreteDynamic_AudioOutputDevice::SetDiscreteOptionByIndex(int32 Index)
 {
 	Super::SetDiscreteOptionByIndex(Index);
-	//UE_LOG(LogLyra, VeryVerbose, TEXT("AudioOutputDevice set to %s - %s"), *(OptionDisplayTexts[Index].ToString()), *OptionValues[Index]);
+	//UE_LOG(LogD1, VeryVerbose, TEXT("AudioOutputDevice set to %s - %s"), *(OptionDisplayTexts[Index].ToString()), *OptionValues[Index]);
 	//bRequestDefault = false;
 
 	//FString RequestedAudioDeviceId = GetValueAsString();
@@ -122,13 +122,13 @@ void ULyraSettingValueDiscreteDynamic_AudioOutputDevice::SetDiscreteOptionByInde
 	//if (RequestedAudioDeviceId == CurrentDeviceId)
 	//{
 	//	LastKnownGoodIndex = Index;
-	//	UE_LOG(LogLyra, VeryVerbose, TEXT("AudioOutputDevice (Not Swapping) - LKG set to index :%d"), LastKnownGoodIndex);
+	//	UE_LOG(LogD1, VeryVerbose, TEXT("AudioOutputDevice (Not Swapping) - LKG set to index :%d"), LastKnownGoodIndex);
 	//}
 	//else
 	//{
 	//	bRequestDefault = (Index == DefaultOptionIndex);
 	//	UAudioMixerBlueprintLibrary::SwapAudioOutputDevice(LocalPlayer, RequestedAudioDeviceId, DevicesSwappedCallback);
-	//	UE_LOG(LogLyra, VeryVerbose, TEXT("AudioOutputDevice requesting %s"), *RequestedAudioDeviceId);
+	//	UE_LOG(LogD1, VeryVerbose, TEXT("AudioOutputDevice requesting %s"), *RequestedAudioDeviceId);
 	//}
 }
 

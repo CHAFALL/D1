@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ModularPawn.h"
-#include "Teams/LyraTeamAgentInterface.h"
+#include "Teams/D1TeamAgentInterface.h"
 
 #include "LyraPawn.generated.h"
 
@@ -15,7 +15,7 @@ struct FFrame;
  * ALyraPawn
  */
 UCLASS()
-class D1GAME_API ALyraPawn : public AModularPawn, public ILyraTeamAgentInterface
+class D1GAME_API ALyraPawn : public AModularPawn, public ID1TeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -33,11 +33,11 @@ public:
 	virtual void UnPossessed() override;
 	//~End of APawn interface
 
-	//~ILyraTeamAgentInterface interface
+	//~ID1TeamAgentInterface interface
 	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
-	virtual FOnLyraTeamIndexChangedDelegate* GetOnTeamIndexChangedDelegate() override;
-	//~End of ILyraTeamAgentInterface interface
+	virtual FOnD1TeamIndexChangedDelegate* GetOnTeamIndexChangedDelegate() override;
+	//~End of ID1TeamAgentInterface interface
 
 protected:
 	// Called to determine what happens to the team ID when possession ends
@@ -56,7 +56,7 @@ private:
 	FGenericTeamId MyTeamID;
 
 	UPROPERTY()
-	FOnLyraTeamIndexChangedDelegate OnTeamChangedDelegate;
+	FOnD1TeamIndexChangedDelegate OnTeamChangedDelegate;
 
 private:
 	UFUNCTION()

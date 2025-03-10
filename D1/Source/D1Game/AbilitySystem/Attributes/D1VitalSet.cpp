@@ -1,6 +1,6 @@
 #include "D1VitalSet.h"
 
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "AbilitySystem/Attributes/D1AttributeSet.h"
 #include "Net/UnrealNetwork.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
@@ -98,7 +98,7 @@ bool UD1VitalSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 			}
 
 #if !UE_BUILD_SHIPPING
-			if (Data.Target.HasMatchingGameplayTag(LyraGameplayTags::Cheat_GodMode) && bIsDamageFromSelfDestruct == false)
+			if (Data.Target.HasMatchingGameplayTag(D1GameplayTags::Cheat_GodMode) && bIsDamageFromSelfDestruct == false)
 			{
 				Data.EvaluatedData.Magnitude = 0.0f;
 				return false;
@@ -122,7 +122,7 @@ void UD1VitalSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData
 
 #if !UE_BUILD_SHIPPING
 	if (bIsDamageFromSelfDestruct == false &&
-		(Data.Target.HasMatchingGameplayTag(LyraGameplayTags::Cheat_GodMode) || Data.Target.HasMatchingGameplayTag(LyraGameplayTags::Cheat_UnlimitedHealth)))
+		(Data.Target.HasMatchingGameplayTag(D1GameplayTags::Cheat_GodMode) || Data.Target.HasMatchingGameplayTag(D1GameplayTags::Cheat_UnlimitedHealth)))
 	{
 		MinimumHealth = 1.0f;
 	}

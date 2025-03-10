@@ -4,7 +4,7 @@
 
 #include "AbilitySystem/Abilities/LyraGameplayAbility.h"
 #include "LyraAbilitySystemComponent.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraAbilitySet)
 
@@ -87,7 +87,7 @@ void ULyraAbilitySet::GiveToAbilitySystem(ULyraAbilitySystemComponent* LyraASC, 
 
 		if (!IsValid(AbilityToGrant.Ability))
 		{
-			UE_LOG(LogLyraAbilitySystem, Error, TEXT("GrantedGameplayAbilities[%d] on ability set [%s] is not valid."), AbilityIndex, *GetNameSafe(this));
+			UE_LOG(LogD1AbilitySystem, Error, TEXT("GrantedGameplayAbilities[%d] on ability set [%s] is not valid."), AbilityIndex, *GetNameSafe(this));
 			continue;
 		}
 
@@ -112,7 +112,7 @@ void ULyraAbilitySet::GiveToAbilitySystem(ULyraAbilitySystemComponent* LyraASC, 
 
 		if (!IsValid(EffectToGrant.GameplayEffect))
 		{
-			UE_LOG(LogLyraAbilitySystem, Error, TEXT("GrantedGameplayEffects[%d] on ability set [%s] is not valid"), EffectIndex, *GetNameSafe(this));
+			UE_LOG(LogD1AbilitySystem, Error, TEXT("GrantedGameplayEffects[%d] on ability set [%s] is not valid"), EffectIndex, *GetNameSafe(this));
 			continue;
 		}
 
@@ -132,7 +132,7 @@ void ULyraAbilitySet::GiveToAbilitySystem(ULyraAbilitySystemComponent* LyraASC, 
 
 		if (!IsValid(SetToGrant.AttributeSet))
 		{
-			UE_LOG(LogLyraAbilitySystem, Error, TEXT("GrantedAttributes[%d] on ability set [%s] is not valid"), SetIndex, *GetNameSafe(this));
+			UE_LOG(LogD1AbilitySystem, Error, TEXT("GrantedAttributes[%d] on ability set [%s] is not valid"), SetIndex, *GetNameSafe(this));
 			continue;
 		}
 

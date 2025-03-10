@@ -1,6 +1,6 @@
 ﻿#include "D1NumberPopWidgetDefault.h"
 
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Animation/UMGSequencePlayer.h"
 #include "Components/TextBlock.h"
 

@@ -2,7 +2,7 @@
 
 #include "LyraInputConfig.h"
 
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraInputConfig)
 
@@ -23,7 +23,7 @@ const UInputAction* ULyraInputConfig::FindNativeInputActionForTag(const FGamepla
 
 	if (bLogNotFound)
 	{
-		UE_LOG(LogLyra, Error, TEXT("Can't find NativeInputAction for InputTag [%s] on InputConfig [%s]."), *InputTag.ToString(), *GetNameSafe(this));
+		UE_LOG(LogD1, Error, TEXT("Can't find NativeInputAction for InputTag [%s] on InputConfig [%s]."), *InputTag.ToString(), *GetNameSafe(this));
 	}
 
 	return nullptr;
@@ -41,7 +41,7 @@ const UInputAction* ULyraInputConfig::FindAbilityInputActionForTag(const FGamepl
 
 	if (bLogNotFound)
 	{
-		UE_LOG(LogLyra, Error, TEXT("Can't find AbilityInputAction for InputTag [%s] on InputConfig [%s]."), *InputTag.ToString(), *GetNameSafe(this));
+		UE_LOG(LogD1, Error, TEXT("Can't find AbilityInputAction for InputTag [%s] on InputConfig [%s]."), *InputTag.ToString(), *GetNameSafe(this));
 	}
 
 	return nullptr;

@@ -18,7 +18,6 @@ struct FGameplayAbilityTargetDataHandle;
 D1GAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityChangedDelegate, FGameplayAbilitySpecHandle, bool/*bGiven*/);
 
-
 /**
  * ULyraAbilitySystemComponent
  *
@@ -30,7 +29,6 @@ class D1GAME_API ULyraAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
-
 	ULyraAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	//~UActorComponent interface
@@ -39,6 +37,9 @@ public:
 
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 
+	virtual void OnGiveAbility(FGameplayAbilitySpec& AbilitySpec) override;
+	virtual void OnRemoveAbility(FGameplayAbilitySpec& AbilitySpec) override;
+	
 	typedef TFunctionRef<bool(const ULyraGameplayAbility* LyraAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
 	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility);
 
@@ -57,11 +58,13 @@ public:
 	void CancelActivationGroupAbilities(ELyraAbilityActivationGroup Group, ULyraGameplayAbility* IgnoreLyraAbility, bool bReplicateCancelAbility);
 
 	// Uses a gameplay effect to add the specified dynamic granted tag.
-	void AddDynamicTagGameplayEffect(const FGameplayTag& Tag);
+	UFUNCTION(BlueprintCallable)
+	void AddDynamicTagGameplayEffect(FGameplayTag Tag);
 
 	// Removes all active instances of the gameplay effect that was used to add the specified dynamic granted tag.
-	void RemoveDynamicTagGameplayEffect(const FGameplayTag& Tag);
-
+	UFUNCTION(BlueprintCallable)
+	void RemoveDynamicTagGameplayEffect(FGameplayTag Tag);
+	
 	/** Gets the ability target data associated with the given ability handle and activation info */
 	void GetAbilityTargetData(const FGameplayAbilitySpecHandle AbilityHandle, FGameplayAbilityActivationInfo ActivationInfo, FGameplayAbilityTargetDataHandle& OutTargetDataHandle);
 
@@ -72,7 +75,6 @@ public:
 	void GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const;
 
 protected:
-
 	void TryActivateAbilitiesOnSpawn();
 
 	virtual void AbilitySecInputStarted(FGameplayAbilitySpec& Spec);
@@ -90,6 +92,7 @@ protected:
 	void ClientNotifyAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason);
 
 	void HandleAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason);
+	
 protected:
 
 	// If set, this table is used to look up tag relationships for activate and cancel
@@ -98,7 +101,7 @@ protected:
 
 	// Handles to abilities that had their input started this frame.
 	TArray<FGameplayAbilitySpecHandle> InputStartedSpecHandles;
-
+	
 	// Handles to abilities that had their input pressed this frame.
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 
@@ -111,6 +114,22 @@ protected:
 	// Number of abilities running in each activation group.
 	int32 ActivationGroupCounts[(uint8)ELyraAbilityActivationGroup::MAX];
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void BlockAnimMontageForSeconds(UAnimMontage* BackwardMontage);
+
+private:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_BlockAnimMontageForSeconds(UAnimMontage* BackwardMontage, FPredictionKey PredictionKey);
+
+	void InvokeBlockAnimMontageForSeconds(UAnimMontage* BackwardMontage);
+
+public:
+	void MarkActiveGameplayEffectDirty(FActiveGameplayEffect* ActiveGameplayEffect);
+	void CheckActiveEffectDuration(const FActiveGameplayEffectHandle& Handle);
+	FActiveGameplayEffect* GetActiveGameplayEffect_Mutable(const FActiveGameplayEffectHandle Handle);
+	TArray<FActiveGameplayEffectHandle> GetAllActiveEffectHandles() const;
+	
 public:
 	FTimerHandle BlockAnimMontageTimerHandle;
 	FAbilityChangedDelegate AbilityChangedDelegate;

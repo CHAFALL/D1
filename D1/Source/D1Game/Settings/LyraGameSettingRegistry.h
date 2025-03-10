@@ -18,7 +18,7 @@ class UObject;
 class UGameSettingCollection;
 class ULyraLocalPlayer;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogLyraGameSettingRegistry, Log, Log);
+DECLARE_LOG_CATEGORY_EXTERN(LogD1GameSettingRegistry, Log, Log);
 
 #define GET_SHARED_SETTINGS_FUNCTION_PATH(FunctionOrPropertyName)							\
 	MakeShared<FGameSettingDataSourceDynamic>(TArray<FString>({								\

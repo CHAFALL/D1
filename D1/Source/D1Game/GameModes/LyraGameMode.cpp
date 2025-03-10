@@ -4,7 +4,7 @@
 #include "AssetRegistry/AssetData.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Misc/CommandLine.h"
 #include "System/LyraAssetManager.h"
 #include "LyraGameState.h"
@@ -21,7 +21,7 @@
 #include "GameModes/LyraExperienceManagerComponent.h"
 #include "GameModes/LyraUserFacingExperienceDefinition.h"
 #include "Kismet/GameplayStatics.h"
-#include "Development/LyraDeveloperSettings.h"
+#include "Development/D1DeveloperSettings.h"
 #include "Player/LyraPlayerSpawningManagerComponent.h"
 #include "CommonUserSubsystem.h"
 #include "CommonSessionSubsystem.h"
@@ -110,7 +110,7 @@ void ALyraGameMode::HandleMatchAssignmentIfNotExpectingOne()
 
 	if (!ExperienceId.IsValid() && World->IsPlayInEditor())
 	{
-		ExperienceId = GetDefault<ULyraDeveloperSettings>()->ExperienceOverride;
+		ExperienceId = GetDefault<UD1DeveloperSettings>()->ExperienceOverride;
 		ExperienceIdSource = TEXT("DeveloperSettings");
 	}
 
@@ -143,7 +143,7 @@ void ALyraGameMode::HandleMatchAssignmentIfNotExpectingOne()
 	FAssetData Dummy;
 	if (ExperienceId.IsValid() && !AssetManager.GetPrimaryAssetData(ExperienceId, /*out*/ Dummy))
 	{
-		UE_LOG(LogLyraExperience, Error, TEXT("EXPERIENCE: Wanted to use %s but couldn't find it, falling back to the default)"), *ExperienceId.ToString());
+		UE_LOG(LogD1Experience, Error, TEXT("EXPERIENCE: Wanted to use %s but couldn't find it, falling back to the default)"), *ExperienceId.ToString());
 		ExperienceId = FPrimaryAssetId();
 	}
 
@@ -275,11 +275,11 @@ void ALyraGameMode::OnUserInitializedForDedicatedServer(const UCommonUserInfo* U
 		// Dedicated servers do not require user login, but some online subsystems may expect it
 		if (bSuccess && ensure(UserInfo))
 		{
-			UE_LOG(LogLyraExperience, Log, TEXT("Dedicated server user login succeeded for id %s, starting online server"), *UserInfo->GetNetId().ToString());
+			UE_LOG(LogD1Experience, Log, TEXT("Dedicated server user login succeeded for id %s, starting online server"), *UserInfo->GetNetId().ToString());
 		}
 		else
 		{
-			UE_LOG(LogLyraExperience, Log, TEXT("Dedicated server user login unsuccessful, starting online server as login is not required"));
+			UE_LOG(LogD1Experience, Log, TEXT("Dedicated server user login unsuccessful, starting online server as login is not required"));
 		}
 		
 		HostDedicatedServerMatch(ECommonSessionOnlineMode::Online);
@@ -290,7 +290,7 @@ void ALyraGameMode::OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId, const F
 {
 	if (ExperienceId.IsValid())
 	{
-		UE_LOG(LogLyraExperience, Log, TEXT("Identified experience %s (Source: %s)"), *ExperienceId.ToString(), *ExperienceIdSource);
+		UE_LOG(LogD1Experience, Log, TEXT("Identified experience %s (Source: %s)"), *ExperienceId.ToString(), *ExperienceIdSource);
 
 		ULyraExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<ULyraExperienceManagerComponent>();
 		check(ExperienceComponent);
@@ -298,7 +298,7 @@ void ALyraGameMode::OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId, const F
 	}
 	else
 	{
-		UE_LOG(LogLyraExperience, Error, TEXT("Failed to identify experience, loading screen will stay up forever"));
+		UE_LOG(LogD1Experience, Error, TEXT("Failed to identify experience, loading screen will stay up forever"));
 	}
 }
 
@@ -361,7 +361,7 @@ APawn* ALyraGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* Ne
 				}
 				else
 				{
-					UE_LOG(LogLyra, Error, TEXT("Game mode was unable to set PawnData on the spawned pawn [%s]."), *GetNameSafe(SpawnedPawn));
+					UE_LOG(LogD1, Error, TEXT("Game mode was unable to set PawnData on the spawned pawn [%s]."), *GetNameSafe(SpawnedPawn));
 				}
 			}
 
@@ -371,12 +371,12 @@ APawn* ALyraGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* Ne
 		}
 		else
 		{
-			UE_LOG(LogLyra, Error, TEXT("Game mode was unable to spawn Pawn of class [%s] at [%s]."), *GetNameSafe(PawnClass), *SpawnTransform.ToHumanReadableString());
+			UE_LOG(LogD1, Error, TEXT("Game mode was unable to spawn Pawn of class [%s] at [%s]."), *GetNameSafe(PawnClass), *SpawnTransform.ToHumanReadableString());
 		}
 	}
 	else
 	{
-		UE_LOG(LogLyra, Error, TEXT("Game mode was unable to spawn Pawn due to NULL pawn class."));
+		UE_LOG(LogD1, Error, TEXT("Game mode was unable to spawn Pawn due to NULL pawn class."));
 	}
 
 	return nullptr;
@@ -507,7 +507,7 @@ void ALyraGameMode::FailedToRestartPlayer(AController* NewPlayer)
 			}
 			else
 			{
-				UE_LOG(LogLyra, Verbose, TEXT("FailedToRestartPlayer(%s) and PlayerCanRestart returned false, so we're not going to try again."), *GetPathNameSafe(NewPlayer));
+				UE_LOG(LogD1, Verbose, TEXT("FailedToRestartPlayer(%s) and PlayerCanRestart returned false, so we're not going to try again."), *GetPathNameSafe(NewPlayer));
 			}
 		}
 		else
@@ -517,6 +517,6 @@ void ALyraGameMode::FailedToRestartPlayer(AController* NewPlayer)
 	}
 	else
 	{
-		UE_LOG(LogLyra, Verbose, TEXT("FailedToRestartPlayer(%s) but there's no pawn class so giving up."), *GetPathNameSafe(NewPlayer));
+		UE_LOG(LogD1, Verbose, TEXT("FailedToRestartPlayer(%s) but there's no pawn class so giving up."), *GetPathNameSafe(NewPlayer));
 	}
 }

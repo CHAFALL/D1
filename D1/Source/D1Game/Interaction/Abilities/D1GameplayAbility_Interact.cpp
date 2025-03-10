@@ -1,7 +1,7 @@
 ﻿#include "D1GameplayAbility_Interact.h"
 
 #include "AbilitySystemComponent.h"
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "AbilitySystem/Abilities/Tasks/D1AbilityTask_WaitInputStart.h"
 #include "Character/LyraCharacter.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
@@ -51,11 +51,11 @@ void UD1GameplayAbility_Interact::UpdateInteractions(const TArray<FD1Interaction
 	FD1InteractionMessage Message;
 	Message.Instigator = GetAvatarActorFromActorInfo();
 	Message.bShouldRefresh = true;
-	Message.bSwitchActive = (GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LyraGameplayTags::Status_Interact) == false);
+	Message.bSwitchActive = (GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(D1GameplayTags::Status_Interact) == false);
 	Message.InteractionInfo = InteractionInfos.Num() > 0 ? InteractionInfos[0] : FD1InteractionInfo();
 
 	UGameplayMessageSubsystem& MessageSystem = UGameplayMessageSubsystem::Get(GetAvatarActorFromActorInfo());
-	MessageSystem.BroadcastMessage(LyraGameplayTags::Message_Interaction_Notice, Message);
+	MessageSystem.BroadcastMessage(D1GameplayTags::Message_Interaction_Notice, Message);
 
 	CurrentInteractionInfos = InteractionInfos;
 }
@@ -89,11 +89,11 @@ void UD1GameplayAbility_Interact::TriggerInteraction()
 		}
 		
 		FGameplayEventData Payload;
-		Payload.EventTag = LyraGameplayTags::Ability_Interact_Active;
+		Payload.EventTag = D1GameplayTags::Ability_Interact_Active;
 		Payload.Instigator = Instigator;
 		Payload.Target = InteractableActor;
 		
-		SendGameplayEvent(LyraGameplayTags::Ability_Interact_Active, Payload);
+		SendGameplayEvent(D1GameplayTags::Ability_Interact_Active, Payload);
 	}
 }
 

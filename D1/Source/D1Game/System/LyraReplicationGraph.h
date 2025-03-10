@@ -8,7 +8,7 @@
 
 class AGameplayDebuggerCategoryReplicator;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogLyraRepGraph, Display, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogD1RepGraph, Display, All);
 
 /** Lyra Replication Graph implementation. See additional notes in LyraReplicationGraph.cpp! */
 UCLASS(transient, config=Engine)

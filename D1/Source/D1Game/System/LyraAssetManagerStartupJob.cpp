@@ -2,14 +2,14 @@
 
 #include "LyraAssetManagerStartupJob.h"
 
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 
 TSharedPtr<FStreamableHandle> FLyraAssetManagerStartupJob::DoJob() const
 {
 	const double JobStartTime = FPlatformTime::Seconds();
 
 	TSharedPtr<FStreamableHandle> Handle;
-	UE_LOG(LogLyra, Display, TEXT("Startup job \"%s\" starting"), *JobName);
+	UE_LOG(LogD1, Display, TEXT("Startup job \"%s\" starting"), *JobName);
 	JobFunc(*this, Handle);
 
 	if (Handle.IsValid())
@@ -19,7 +19,7 @@ TSharedPtr<FStreamableHandle> FLyraAssetManagerStartupJob::DoJob() const
 		Handle->BindUpdateDelegate(FStreamableUpdateDelegate());
 	}
 
-	UE_LOG(LogLyra, Display, TEXT("Startup job \"%s\" took %.2f seconds to complete"), *JobName, FPlatformTime::Seconds() - JobStartTime);
+	UE_LOG(LogD1, Display, TEXT("Startup job \"%s\" took %.2f seconds to complete"), *JobName, FPlatformTime::Seconds() - JobStartTime);
 
 	return Handle;
 }

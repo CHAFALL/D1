@@ -1,7 +1,7 @@
 ﻿#include "D1GameplayAbility_Interact_Chest.h"
 
 #include "CommonActivatableWidget.h"
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "Actions/AsyncAction_PushContentToLayerForPlayer.h"
 #include "Actors/D1ChestBase.h"
 #include "Character/LyraCharacter.h"
@@ -86,16 +86,16 @@ void UD1GameplayAbility_Interact_Chest::OnAfterPushWidget(UCommonActivatableWidg
 	
 	FInventoryInitializeMessage MyInventoryInitMessage;
 	MyInventoryInitMessage.InventoryManager = LyraCharacter->GetComponentByClass<UD1InventoryManagerComponent>();
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Initialize_MyInventory, MyInventoryInitMessage);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Initialize_MyInventory, MyInventoryInitMessage);
 	
 	FEquipmentInitializeMessage MyEquipmentInitMessage;
 	MyEquipmentInitMessage.EquipmentManager = LyraCharacter->GetComponentByClass<UD1EquipmentManagerComponent>();
 	MyEquipmentInitMessage.EquipManager = LyraCharacter->GetComponentByClass<UD1EquipManagerComponent>();
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Initialize_MyEquipment, MyEquipmentInitMessage);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Initialize_MyEquipment, MyEquipmentInitMessage);
 
 	FInventoryInitializeMessage OtherInventoryInitMessage;
 	OtherInventoryInitMessage.InventoryManager = InteractableActor->GetComponentByClass<UD1InventoryManagerComponent>();
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Initialize_OtherInventory, OtherInventoryInitMessage);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Initialize_OtherInventory, OtherInventoryInitMessage);
 
 	InPushedWidget->OnDeactivated().AddLambda([this]()
 	{

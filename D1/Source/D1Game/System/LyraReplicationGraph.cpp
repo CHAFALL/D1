@@ -91,7 +91,7 @@
 #include "Character/LyraCharacter.h"
 #include "Player/LyraPlayerController.h"
 
-DEFINE_LOG_CATEGORY( LogLyraRepGraph );
+DEFINE_LOG_CATEGORY( LogD1RepGraph );
 
 namespace Lyra::RepGraph
 {
@@ -142,11 +142,11 @@ namespace Lyra::RepGraph
 			// Enable/Disable via developer settings
 			if (LyraRepGraphSettings && LyraRepGraphSettings->bDisableReplicationGraph)
 			{
-				UE_LOG(LogLyraRepGraph, Display, TEXT("Replication graph is disabled via LyraReplicationGraphSettings."));
+				UE_LOG(LogD1RepGraph, Display, TEXT("Replication graph is disabled via LyraReplicationGraphSettings."));
 				return nullptr;
 			}
 
-			UE_LOG(LogLyraRepGraph, Display, TEXT("Replication graph is enabled for %s in world %s."), *GetNameSafe(ForNetDriver), *GetPathNameSafe(World));
+			UE_LOG(LogD1RepGraph, Display, TEXT("Replication graph is enabled for %s in world %s."), *GetNameSafe(ForNetDriver), *GetPathNameSafe(World));
 
 			TSubclassOf<ULyraReplicationGraph> GraphClass = LyraRepGraphSettings->DefaultReplicationGraphClass.TryLoadClass<ULyraReplicationGraph>();
 			if (GraphClass.Get() == nullptr)
@@ -271,7 +271,7 @@ void ULyraReplicationGraph::InitClassReplicationInfo(FClassReplicationInfo& Info
 	if (Spatialize)
 	{
 		Info.SetCullDistanceSquared(CDO->NetCullDistanceSquared);
-		UE_LOG(LogLyraRepGraph, Log, TEXT("Setting cull distance for %s to %f (%f)"), *Class->GetName(), Info.GetCullDistanceSquared(), Info.GetCullDistance());
+		UE_LOG(LogD1RepGraph, Log, TEXT("Setting cull distance for %s to %f (%f)"), *Class->GetName(), Info.GetCullDistanceSquared(), Info.GetCullDistance());
 	}
 
 	Info.ReplicationPeriodFrame = GetReplicationPeriodFrameForFrequency(CDO->NetUpdateFrequency);
@@ -282,7 +282,7 @@ void ULyraReplicationGraph::InitClassReplicationInfo(FClassReplicationInfo& Info
 		NativeClass = NativeClass->GetSuperClass();
 	}
 
-	UE_LOG(LogLyraRepGraph, Log, TEXT("Setting replication period for %s (%s) to %d frames (%.2f)"), *Class->GetName(), *NativeClass->GetName(), Info.ReplicationPeriodFrame, CDO->NetUpdateFrequency);
+	UE_LOG(LogD1RepGraph, Log, TEXT("Setting replication period for %s (%s) to %d frames (%.2f)"), *Class->GetName(), *NativeClass->GetName(), Info.ReplicationPeriodFrame, CDO->NetUpdateFrequency);
 }
 
 bool ULyraReplicationGraph::ConditionalInitClassReplicationInfo(UClass* ReplicatedClass, FClassReplicationInfo& ClassInfo)
@@ -303,7 +303,7 @@ void ULyraReplicationGraph::AddClassRepInfo(UClass* Class, EClassRepNodeMapping 
 	{
 		if (Class->GetDefaultObject<AActor>()->bAlwaysRelevant)
 		{
-			UE_LOG(LogLyraRepGraph, Warning, TEXT("Replicated Class %s is AlwaysRelevant but is initialized into a spatialized node (%s)"), *Class->GetName(), *StaticEnum<EClassRepNodeMapping>()->GetNameStringByValue((int64)Mapping));
+			UE_LOG(LogD1RepGraph, Warning, TEXT("Replicated Class %s is AlwaysRelevant but is initialized into a spatialized node (%s)"), *Class->GetName(), *StaticEnum<EClassRepNodeMapping>()->GetNameStringByValue((int64)Mapping));
 		}
 	}
 
@@ -316,7 +316,7 @@ void ULyraReplicationGraph::RegisterClassReplicationInfo(UClass* ReplicatedClass
 	if (ConditionalInitClassReplicationInfo(ReplicatedClass, ClassInfo))
 	{
 		GlobalActorReplicationInfoMap.SetClassInfo(ReplicatedClass, ClassInfo);
-		UE_LOG(LogLyraRepGraph, Log, TEXT("Setting %s - %.2f"), *GetNameSafe(ReplicatedClass), ClassInfo.GetCullDistance());
+		UE_LOG(LogD1RepGraph, Log, TEXT("Setting %s - %.2f"), *GetNameSafe(ReplicatedClass), ClassInfo.GetCullDistance());
 	}
 }
 
@@ -336,22 +336,22 @@ void ULyraReplicationGraph::InitGlobalActorClassSettings()
 				if (bHandled)
 				{
 					EClassRepNodeMapping Mapping = ClassRepNodePolicies.GetChecked(Class);
-					UE_LOG(LogLyraRepGraph, Warning, TEXT("%s was Lazy Initialized. (Parent: %s) %d."), *GetNameSafe(Class), *GetNameSafe(Class->GetSuperClass()), (int32)Mapping);
+					UE_LOG(LogD1RepGraph, Warning, TEXT("%s was Lazy Initialized. (Parent: %s) %d."), *GetNameSafe(Class), *GetNameSafe(Class->GetSuperClass()), (int32)Mapping);
 
 					FClassReplicationInfo& ParentRepInfo = GlobalActorReplicationInfoMap.GetClassInfo(Class->GetSuperClass());
 					if (ClassInfo.BuildDebugStringDelta() != ParentRepInfo.BuildDebugStringDelta())
 					{
-						UE_LOG(LogLyraRepGraph, Warning, TEXT("Differences Found!"));
+						UE_LOG(LogD1RepGraph, Warning, TEXT("Differences Found!"));
 						FString DebugStr = ParentRepInfo.BuildDebugStringDelta();
-						UE_LOG(LogLyraRepGraph, Warning, TEXT("  Parent: %s"), *DebugStr);
+						UE_LOG(LogD1RepGraph, Warning, TEXT("  Parent: %s"), *DebugStr);
 
 						DebugStr = ClassInfo.BuildDebugStringDelta();
-						UE_LOG(LogLyraRepGraph, Warning, TEXT("  Class : %s"), *DebugStr);
+						UE_LOG(LogD1RepGraph, Warning, TEXT("  Class : %s"), *DebugStr);
 					}
 				}
 				else
 				{
-					UE_LOG(LogLyraRepGraph, Warning, TEXT("%s skipped Lazy Initialization because it does not differ from its parent. (Parent: %s)"), *GetNameSafe(Class), *GetNameSafe(Class->GetSuperClass()));
+					UE_LOG(LogD1RepGraph, Warning, TEXT("%s skipped Lazy Initialization because it does not differ from its parent. (Parent: %s)"), *GetNameSafe(Class), *GetNameSafe(Class->GetSuperClass()));
 
 				}
 			}
@@ -376,7 +376,7 @@ void ULyraReplicationGraph::InitGlobalActorClassSettings()
 		{
 			if (UClass* StaticActorClass = ActorClassSettings.GetStaticActorClass())
 			{
-				UE_LOG(LogLyraRepGraph, Log, TEXT("ActorClassSettings -- AddClassRepInfo - %s :: %i"), *StaticActorClass->GetName(), int(ActorClassSettings.ClassNodeMapping));
+				UE_LOG(LogD1RepGraph, Log, TEXT("ActorClassSettings -- AddClassRepInfo - %s :: %i"), *StaticActorClass->GetName(), int(ActorClassSettings.ClassNodeMapping));
 				AddClassRepInfo(StaticActorClass, ActorClassSettings.ClassNodeMapping);
 			}
 		}
@@ -473,8 +473,8 @@ void ULyraReplicationGraph::InitGlobalActorClassSettings()
 	}
 
 	// Print out what we came up with
-	UE_LOG(LogLyraRepGraph, Log, TEXT(""));
-	UE_LOG(LogLyraRepGraph, Log, TEXT("Class Routing Map: "));
+	UE_LOG(LogD1RepGraph, Log, TEXT(""));
+	UE_LOG(LogD1RepGraph, Log, TEXT("Class Routing Map: "));
 	for (auto ClassMapIt = ClassRepNodePolicies.CreateIterator(); ClassMapIt; ++ClassMapIt)
 	{
 		UClass* Class = CastChecked<UClass>(ClassMapIt.Key().ResolveObjectPtr());
@@ -489,17 +489,17 @@ void ULyraReplicationGraph::InitGlobalActorClassSettings()
 			continue;
 		}
 
-		UE_LOG(LogLyraRepGraph, Log, TEXT("  %s (%s) -> %s"), *Class->GetName(), *GetNameSafe(ParentNativeClass), *StaticEnum<EClassRepNodeMapping>()->GetNameStringByValue((int64)Mapping));
+		UE_LOG(LogD1RepGraph, Log, TEXT("  %s (%s) -> %s"), *Class->GetName(), *GetNameSafe(ParentNativeClass), *StaticEnum<EClassRepNodeMapping>()->GetNameStringByValue((int64)Mapping));
 	}
 
-	UE_LOG(LogLyraRepGraph, Log, TEXT(""));
-	UE_LOG(LogLyraRepGraph, Log, TEXT("Class Settings Map: "));
+	UE_LOG(LogD1RepGraph, Log, TEXT(""));
+	UE_LOG(LogD1RepGraph, Log, TEXT("Class Settings Map: "));
 	FClassReplicationInfo DefaultValues;
 	for (auto ClassRepInfoIt = GlobalActorReplicationInfoMap.CreateClassMapIterator(); ClassRepInfoIt; ++ClassRepInfoIt)
 	{
 		UClass* Class = CastChecked<UClass>(ClassRepInfoIt.Key().ResolveObjectPtr());
 		const FClassReplicationInfo& ClassInfo = ClassRepInfoIt.Value();
-		UE_LOG(LogLyraRepGraph, Log, TEXT("  %s (%s) -> %s"), *Class->GetName(), *GetNameSafe(GetParentNativeClass(Class)), *ClassInfo.BuildDebugStringDelta());
+		UE_LOG(LogD1RepGraph, Log, TEXT("  %s (%s) -> %s"), *Class->GetName(), *GetNameSafe(GetParentNativeClass(Class)), *ClassInfo.BuildDebugStringDelta());
 	}
 
 
@@ -522,7 +522,7 @@ void ULyraReplicationGraph::InitGlobalActorClassSettings()
 		{
 			if (UClass* StaticActorClass = ActorClassSettings.GetStaticActorClass())
 			{
-				UE_LOG(LogLyraRepGraph, Log, TEXT("ActorClassSettings -- RPC_Multicast_OpenChannelForClass - %s"), *StaticActorClass->GetName());
+				UE_LOG(LogD1RepGraph, Log, TEXT("ActorClassSettings -- RPC_Multicast_OpenChannelForClass - %s"), *StaticActorClass->GetName());
 				RPC_Multicast_OpenChannelForClass.Set(StaticActorClass, ActorClassSettings.bRPC_Multicast_OpenChannelForClass);
 			}
 		}
@@ -644,7 +644,7 @@ void ULyraReplicationGraph::RouteRemoveNetworkActorToNodes(const FNewReplicatedA
 				FActorRepListRefView& RepList = AlwaysRelevantStreamingLevelActors.FindChecked(ActorInfo.StreamingLevelName);
 				if (RepList.RemoveFast(ActorInfo.Actor) == false)
 				{
-					UE_LOG(LogLyraRepGraph, Warning, TEXT("Actor %s was not found in AlwaysRelevantStreamingLevelActors list. LevelName: %s"), *GetActorRepListTypeDebugString(ActorInfo.Actor), *ActorInfo.StreamingLevelName.ToString());
+					UE_LOG(LogD1RepGraph, Warning, TEXT("Actor %s was not found in AlwaysRelevantStreamingLevelActors list. LevelName: %s"), *GetActorRepListTypeDebugString(ActorInfo.Actor), *ActorInfo.StreamingLevelName.ToString());
 				}				
 			}
 
@@ -799,7 +799,7 @@ void ULyraReplicationGraphNode_AlwaysRelevant_ForConnection::GatherActorListsFor
 		if (Ptr == nullptr)
 		{
 			// No always relevant lists for that level
-			UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogLyraRepGraph, Display, TEXT("CLIENTSTREAMING Removing %s from AlwaysRelevantStreamingLevelActors because FActorRepListRefView is null. %s "), *StreamingLevel.ToString(),  *Params.ConnectionManager.GetName());
+			UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogD1RepGraph, Display, TEXT("CLIENTSTREAMING Removing %s from AlwaysRelevantStreamingLevelActors because FActorRepListRefView is null. %s "), *StreamingLevel.ToString(),  *Params.ConnectionManager.GetName());
 			AlwaysRelevantStreamingLevelsNeedingReplication.RemoveAtSwap(Idx, 1, EAllowShrinking::No);
 			continue;
 		}
@@ -821,18 +821,18 @@ void ULyraReplicationGraphNode_AlwaysRelevant_ForConnection::GatherActorListsFor
 
 			if (bAllDormant)
 			{
-				UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogLyraRepGraph, Display, TEXT("CLIENTSTREAMING All AlwaysRelevant Actors Dormant on StreamingLevel %s for %s. Removing list."), *StreamingLevel.ToString(), *Params.ConnectionManager.GetName());
+				UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogD1RepGraph, Display, TEXT("CLIENTSTREAMING All AlwaysRelevant Actors Dormant on StreamingLevel %s for %s. Removing list."), *StreamingLevel.ToString(), *Params.ConnectionManager.GetName());
 				AlwaysRelevantStreamingLevelsNeedingReplication.RemoveAtSwap(Idx, 1, EAllowShrinking::No);
 			}
 			else
 			{
-				UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogLyraRepGraph, Display, TEXT("CLIENTSTREAMING Adding always Actors on StreamingLevel %s for %s because it has at least one non dormant actor"), *StreamingLevel.ToString(), *Params.ConnectionManager.GetName());
+				UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogD1RepGraph, Display, TEXT("CLIENTSTREAMING Adding always Actors on StreamingLevel %s for %s because it has at least one non dormant actor"), *StreamingLevel.ToString(), *Params.ConnectionManager.GetName());
 				Params.OutGatheredReplicationLists.AddReplicationActorList(RepList);
 			}
 		}
 		else
 		{
-			UE_LOG(LogLyraRepGraph, Warning, TEXT("ULyraReplicationGraphNode_AlwaysRelevant_ForConnection::GatherActorListsForConnection - empty RepList %s"), *Params.ConnectionManager.GetName());
+			UE_LOG(LogD1RepGraph, Warning, TEXT("ULyraReplicationGraphNode_AlwaysRelevant_ForConnection::GatherActorListsForConnection - empty RepList %s"), *Params.ConnectionManager.GetName());
 		}
 
 	}
@@ -847,13 +847,13 @@ void ULyraReplicationGraphNode_AlwaysRelevant_ForConnection::GatherActorListsFor
 
 void ULyraReplicationGraphNode_AlwaysRelevant_ForConnection::OnClientLevelVisibilityAdd(FName LevelName, UWorld* StreamingWorld)
 {
-	UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogLyraRepGraph, Display, TEXT("CLIENTSTREAMING ::OnClientLevelVisibilityAdd - %s"), *LevelName.ToString());
+	UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogD1RepGraph, Display, TEXT("CLIENTSTREAMING ::OnClientLevelVisibilityAdd - %s"), *LevelName.ToString());
 	AlwaysRelevantStreamingLevelsNeedingReplication.Add(LevelName);
 }
 
 void ULyraReplicationGraphNode_AlwaysRelevant_ForConnection::OnClientLevelVisibilityRemove(FName LevelName)
 {
-	UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogLyraRepGraph, Display, TEXT("CLIENTSTREAMING ::OnClientLevelVisibilityRemove - %s"), *LevelName.ToString());
+	UE_CLOG(Lyra::RepGraph::DisplayClientLevelStreaming > 0, LogD1RepGraph, Display, TEXT("CLIENTSTREAMING ::OnClientLevelVisibilityRemove - %s"), *LevelName.ToString());
 	AlwaysRelevantStreamingLevelsNeedingReplication.Remove(LevelName);
 }
 
@@ -980,7 +980,7 @@ FAutoConsoleCommandWithWorldAndArgs ChangeFrequencyBucketsCmd(TEXT("Lyra.RepGrap
 		LexTryParseString<int32>(Buckets, *Args[0]);
 	}
 
-	UE_LOG(LogLyraRepGraph, Display, TEXT("Setting Frequency Buckets to %d"), Buckets);
+	UE_LOG(LogD1RepGraph, Display, TEXT("Setting Frequency Buckets to %d"), Buckets);
 	for (TObjectIterator<UReplicationGraphNode_ActorListFrequencyBuckets> It; It; ++It)
 	{
 		UReplicationGraphNode_ActorListFrequencyBuckets* Node = *It;

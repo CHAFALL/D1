@@ -1,6 +1,6 @@
 ﻿#include "D1GameplayAbility_Interact_Player.h"
 
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "Actions/AsyncAction_PushContentToLayerForPlayer.h"
 #include "Character/LyraCharacter.h"
 #include "Character/LyraHealthComponent.h"
@@ -86,21 +86,21 @@ void UD1GameplayAbility_Interact_Player::OnAfterPushWidget(UCommonActivatableWid
 
 	FInventoryInitializeMessage MyInventoryInitMessage;
 	MyInventoryInitMessage.InventoryManager = LyraCharacter->GetComponentByClass<UD1InventoryManagerComponent>();
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Initialize_MyInventory, MyInventoryInitMessage);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Initialize_MyInventory, MyInventoryInitMessage);
 	
 	FEquipmentInitializeMessage MyEquipmentInitMessage;
 	MyEquipmentInitMessage.EquipmentManager = LyraCharacter->GetComponentByClass<UD1EquipmentManagerComponent>();
 	MyEquipmentInitMessage.EquipManager = LyraCharacter->GetComponentByClass<UD1EquipManagerComponent>();
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Initialize_MyEquipment, MyEquipmentInitMessage);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Initialize_MyEquipment, MyEquipmentInitMessage);
 
 	FInventoryInitializeMessage OtherInventoryInitMessage;
 	OtherInventoryInitMessage.InventoryManager = InteractableActor->GetComponentByClass<UD1InventoryManagerComponent>();
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Initialize_OtherInventory, OtherInventoryInitMessage);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Initialize_OtherInventory, OtherInventoryInitMessage);
 
 	FEquipmentInitializeMessage OtherEquipmentInitMessage;
 	OtherEquipmentInitMessage.EquipmentManager = InteractableActor->GetComponentByClass<UD1EquipmentManagerComponent>();
 	OtherEquipmentInitMessage.EquipManager = InteractableActor->GetComponentByClass<UD1EquipManagerComponent>();
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Initialize_OtherEquipment, OtherEquipmentInitMessage);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Initialize_OtherEquipment, OtherEquipmentInitMessage);
 
 	InPushedWidget->OnDeactivated().AddLambda([this]()
 	{

@@ -1,6 +1,6 @@
 ﻿#include "D1WorldInteractable.h"
 
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "Character/LyraCharacter.h"
 #include "Net/UnrealNetwork.h"
 
@@ -67,7 +67,7 @@ void AD1WorldInteractable::OnInteractionSuccess(AActor* Interactor)
 				if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(LyraCharacter))
 				{
 					FGameplayTagContainer CancelAbilitiesTag;
-					CancelAbilitiesTag.AddTag(LyraGameplayTags::Ability_Interact_Active);
+					CancelAbilitiesTag.AddTag(D1GameplayTags::Ability_Interact_Active);
 					ASC->CancelAbilities(&CancelAbilitiesTag);
 				}
 			}

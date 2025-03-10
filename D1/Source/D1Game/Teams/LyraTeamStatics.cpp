@@ -4,7 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/World.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Teams/LyraTeamDisplayAsset.h"
 #include "Teams/LyraTeamSubsystem.h"
 
@@ -33,13 +33,13 @@ void ULyraTeamStatics::FindTeamFromObject(const UObject* Agent, bool& bIsPartOfT
 
 				if ((DisplayAsset == nullptr) && bLogIfNotSet)
 				{
-					UE_LOG(LogLyraTeams, Log, TEXT("FindTeamFromObject(%s) called too early (found team %d but no display asset set yet"), *GetPathNameSafe(Agent), TeamId);
+					UE_LOG(LogD1Teams, Log, TEXT("FindTeamFromObject(%s) called too early (found team %d but no display asset set yet"), *GetPathNameSafe(Agent), TeamId);
 				}
 			}
 		}
 		else
 		{
-			UE_LOG(LogLyraTeams, Error, TEXT("FindTeamFromObject(%s) failed: Team subsystem does not exist yet"), *GetPathNameSafe(Agent));
+			UE_LOG(LogD1Teams, Error, TEXT("FindTeamFromObject(%s) failed: Team subsystem does not exist yet"), *GetPathNameSafe(Agent));
 		}
 	}
 }

@@ -10,7 +10,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraInputModifiers)
 
-DEFINE_LOG_CATEGORY_STATIC(LogLyraInputModifiers, Log, All);
+DEFINE_LOG_CATEGORY_STATIC(LogD1InputModifiers, Log, All);
 
 //////////////////////////////////////////////////////////////////////
 // LyraInputModifiersHelpers

@@ -1,8 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "LyraAssetManager.h"
-#include "LyraLogChannels.h"
-#include "LyraGameplayTags.h"
+#include "D1LogChannels.h"
+#include "D1GameplayTags.h"
 #include "LyraGameData.h"
 #include "Data/D1CharacterData.h"
 #include "Data/D1ItemData.h"
@@ -51,7 +51,7 @@ ULyraAssetManager& ULyraAssetManager::Get()
 		return *Singleton;
 	}
 
-	UE_LOG(LogLyra, Fatal, TEXT("Invalid AssetManagerClassName in DefaultEngine.ini.  It must be set to LyraAssetManager!"));
+	UE_LOG(LogD1, Fatal, TEXT("Invalid AssetManagerClassName in DefaultEngine.ini.  It must be set to LyraAssetManager!"));
 
 	// Fatal error above prevents this from being called.
 	return *NewObject<ULyraAssetManager>();
@@ -97,15 +97,15 @@ void ULyraAssetManager::AddLoadedAsset(const UObject* Asset)
 
 void ULyraAssetManager::DumpLoadedAssets()
 {
-	UE_LOG(LogLyra, Log, TEXT("========== Start Dumping Loaded Assets =========="));
+	UE_LOG(LogD1, Log, TEXT("========== Start Dumping Loaded Assets =========="));
 
 	for (const UObject* LoadedAsset : Get().LoadedAssets)
 	{
-		UE_LOG(LogLyra, Log, TEXT("  %s"), *GetNameSafe(LoadedAsset));
+		UE_LOG(LogD1, Log, TEXT("  %s"), *GetNameSafe(LoadedAsset));
 	}
 
-	UE_LOG(LogLyra, Log, TEXT("... %d assets in loaded pool"), Get().LoadedAssets.Num());
-	UE_LOG(LogLyra, Log, TEXT("========== Finish Dumping Loaded Assets =========="));
+	UE_LOG(LogD1, Log, TEXT("... %d assets in loaded pool"), Get().LoadedAssets.Num());
+	UE_LOG(LogD1, Log, TEXT("========== Finish Dumping Loaded Assets =========="));
 }
 
 void ULyraAssetManager::StartInitialLoading()
@@ -194,7 +194,7 @@ UPrimaryDataAsset* ULyraAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDa
 		const bool bAllowInPIE = true;
 		SlowTask.MakeDialog(bShowCancelButton, bAllowInPIE);
 #endif
-		UE_LOG(LogLyra, Log, TEXT("Loading GameData: %s ..."), *DataClassPath.ToString());
+		UE_LOG(LogD1, Log, TEXT("Loading GameData: %s ..."), *DataClassPath.ToString());
 		SCOPE_LOG_TIME_IN_SECONDS(TEXT("    ... GameData loaded!"), nullptr);
 
 		// This can be called recursively in the editor because it is called on demand from PostLoad so force a sync load for primary asset and async load the rest in that case
@@ -223,7 +223,7 @@ UPrimaryDataAsset* ULyraAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDa
 	else
 	{
 		// It is not acceptable to fail to load any GameData asset. It will result in soft failures that are hard to diagnose.
-		UE_LOG(LogLyra, Fatal, TEXT("Failed to load GameData asset at %s. Type %s. This is not recoverable and likely means you do not have the correct data to run %s."), *DataClassPath.ToString(), *PrimaryAssetType.ToString(), FApp::GetProjectName());
+		UE_LOG(LogD1, Fatal, TEXT("Failed to load GameData asset at %s. Type %s. This is not recoverable and likely means you do not have the correct data to run %s."), *DataClassPath.ToString(), *PrimaryAssetType.ToString(), FApp::GetProjectName());
 	}
 
 	return Asset;
@@ -282,7 +282,7 @@ void ULyraAssetManager::DoAllStartupJobs()
 
 	StartupJobs.Empty();
 
-	UE_LOG(LogLyra, Display, TEXT("All startup jobs took %.2f seconds to complete"), FPlatformTime::Seconds() - AllStartupJobsStartTime);
+	UE_LOG(LogD1, Display, TEXT("All startup jobs took %.2f seconds to complete"), FPlatformTime::Seconds() - AllStartupJobsStartTime);
 }
 
 void ULyraAssetManager::UpdateInitialGameContentLoadPercent(float GameContentPercent)

@@ -8,7 +8,7 @@
 #include "GameModes/LyraExperienceManagerComponent.h"
 #include "Messages/LyraVerbMessage.h"
 #include "Player/LyraPlayerState.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Net/UnrealNetwork.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraGameState)
@@ -128,7 +128,7 @@ void ALyraGameState::SetRecorderPlayerState(APlayerState* NewPlayerState)
 	}
 	else
 	{
-		UE_LOG(LogLyra, Warning, TEXT("SetRecorderPlayerState was called on %s but should only be called once per game on the primary user"), *GetName());
+		UE_LOG(LogD1, Warning, TEXT("SetRecorderPlayerState was called on %s but should only be called once per game on the primary user"), *GetName());
 	}
 }
 

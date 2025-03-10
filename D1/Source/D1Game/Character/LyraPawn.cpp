@@ -3,7 +3,7 @@
 #include "LyraPawn.h"
 
 #include "GameFramework/Controller.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "Net/UnrealNetwork.h"
 #include "UObject/ScriptInterface.h"
 
@@ -41,7 +41,7 @@ void ALyraPawn::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	// Grab the current team ID and listen for future changes
-	if (ILyraTeamAgentInterface* ControllerAsTeamProvider = Cast<ILyraTeamAgentInterface>(NewController))
+	if (ID1TeamAgentInterface* ControllerAsTeamProvider = Cast<ID1TeamAgentInterface>(NewController))
 	{
 		MyTeamID = ControllerAsTeamProvider->GetGenericTeamId();
 		ControllerAsTeamProvider->GetTeamChangedDelegateChecked().AddDynamic(this, &ThisClass::OnControllerChangedTeam);
@@ -55,7 +55,7 @@ void ALyraPawn::UnPossessed()
 
 	// Stop listening for changes from the old controller
 	const FGenericTeamId OldTeamID = MyTeamID;
-	if (ILyraTeamAgentInterface* ControllerAsTeamProvider = Cast<ILyraTeamAgentInterface>(OldController))
+	if (ID1TeamAgentInterface* ControllerAsTeamProvider = Cast<ID1TeamAgentInterface>(OldController))
 	{
 		ControllerAsTeamProvider->GetTeamChangedDelegateChecked().RemoveAll(this);
 	}
@@ -79,12 +79,12 @@ void ALyraPawn::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 		}
 		else
 		{
-			UE_LOG(LogLyraTeams, Error, TEXT("You can't set the team ID on a pawn (%s) except on the authority"), *GetPathNameSafe(this));
+			UE_LOG(LogD1Teams, Error, TEXT("You can't set the team ID on a pawn (%s) except on the authority"), *GetPathNameSafe(this));
 		}
 	}
 	else
 	{
-		UE_LOG(LogLyraTeams, Error, TEXT("You can't set the team ID on a possessed pawn (%s); it's driven by the associated controller"), *GetPathNameSafe(this));
+		UE_LOG(LogD1Teams, Error, TEXT("You can't set the team ID on a possessed pawn (%s); it's driven by the associated controller"), *GetPathNameSafe(this));
 	}
 }
 
@@ -93,7 +93,7 @@ FGenericTeamId ALyraPawn::GetGenericTeamId() const
 	return MyTeamID;
 }
 
-FOnLyraTeamIndexChangedDelegate* ALyraPawn::GetOnTeamIndexChangedDelegate()
+FOnD1TeamIndexChangedDelegate* ALyraPawn::GetOnTeamIndexChangedDelegate()
 {
 	return &OnTeamChangedDelegate;
 }

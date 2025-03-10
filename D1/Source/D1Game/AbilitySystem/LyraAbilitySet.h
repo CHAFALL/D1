@@ -136,7 +136,7 @@ public:
 public:
 	const TArray<FLyraAbilitySet_GameplayAbility>& GetGrantedGameplayAbilities() const { return GrantedGameplayAbilities; }
 	const TArray<FLyraAbilitySet_GameplayEffect>& GetGrantedGameplayEffects() const { return GrantedGameplayEffects; }
-
+	
 protected:
 
 	// Gameplay abilities to grant when this ability set is granted.

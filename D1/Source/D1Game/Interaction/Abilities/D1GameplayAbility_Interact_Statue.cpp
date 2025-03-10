@@ -1,7 +1,7 @@
 ﻿#include "D1GameplayAbility_Interact_Statue.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "System/LyraAssetManager.h"
 #include "System/LyraGameData.h"
 
@@ -25,7 +25,7 @@ void UD1GameplayAbility_Interact_Statue::ActivateAbility(const FGameplayAbilityS
 
 	FGameplayCueParameters Parameters;
 	Parameters.Instigator = InteractableActor;
-	K2_ExecuteGameplayCueWithParams(LyraGameplayTags::GameplayCue_Statue_Success, Parameters);
+	K2_ExecuteGameplayCueWithParams(D1GameplayTags::GameplayCue_Statue_Success, Parameters);
 
 	if (HasAuthority(&CurrentActivationInfo))
 	{
@@ -33,7 +33,7 @@ void UD1GameplayAbility_Interact_Statue::ActivateAbility(const FGameplayAbilityS
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(HealGE);
 		if (FGameplayEffectSpec* EffectSpec = EffectSpecHandle.Data.Get())
 		{
-			EffectSpec->SetSetByCallerMagnitude(LyraGameplayTags::SetByCaller_BaseHealth, HealthMagnitude);
+			EffectSpec->SetSetByCallerMagnitude(D1GameplayTags::SetByCaller_BaseHealth, HealthMagnitude);
 			ApplyGameplayEffectSpecToOwner(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle);
 		}
 	}

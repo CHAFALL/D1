@@ -12,7 +12,7 @@
 #include "GameFeaturesSubsystemSettings.h"
 #include "TimerManager.h"
 #include "Settings/LyraSettingsLocal.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraExperienceManagerComponent)
 
@@ -125,7 +125,7 @@ void ULyraExperienceManagerComponent::StartExperienceLoad()
 	check(CurrentExperience != nullptr);
 	check(LoadState == ELyraExperienceLoadState::Unloaded);
 
-	UE_LOG(LogLyraExperience, Log, TEXT("EXPERIENCE: StartExperienceLoad(CurrentExperience = %s, %s)"),
+	UE_LOG(LogD1Experience, Log, TEXT("EXPERIENCE: StartExperienceLoad(CurrentExperience = %s, %s)"),
 		*CurrentExperience->GetPrimaryAssetId().ToString(),
 		*GetClientServerContextString(this));
 
@@ -216,7 +216,7 @@ void ULyraExperienceManagerComponent::OnExperienceLoadComplete()
 	check(LoadState == ELyraExperienceLoadState::Loading);
 	check(CurrentExperience != nullptr);
 
-	UE_LOG(LogLyraExperience, Log, TEXT("EXPERIENCE: OnExperienceLoadComplete(CurrentExperience = %s, %s)"),
+	UE_LOG(LogD1Experience, Log, TEXT("EXPERIENCE: OnExperienceLoadComplete(CurrentExperience = %s, %s)"),
 		*CurrentExperience->GetPrimaryAssetId().ToString(),
 		*GetClientServerContextString(this));
 
@@ -434,7 +434,7 @@ void ULyraExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlay
 
 		if (NumExpectedPausers > 0)
 		{
-			UE_LOG(LogLyraExperience, Error, TEXT("Actions that have asynchronous deactivation aren't fully supported yet in Lyra experiences"));
+			UE_LOG(LogD1Experience, Error, TEXT("Actions that have asynchronous deactivation aren't fully supported yet in Lyra experiences"));
 		}
 
 		if (NumExpectedPausers == NumObservedPausers)

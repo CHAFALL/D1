@@ -4,7 +4,7 @@
 
 #include "Feedback/NumberPops/LyraNumberPopComponent.h"
 #include "LyraDamagePopStyleNiagara.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "NiagaraComponent.h"
 #include "NiagaraDataInterfaceArrayFunctionLibrary.h"
 
@@ -46,7 +46,7 @@ void ULyraNumberPopComponent_NiagaraText::AddNumberPop(const FLyraNumberPopReque
 	NiagaraComp->Activate(false);
 	NiagaraComp->SetWorldLocation(NewRequest.WorldLocation);
 
-	UE_LOG(LogLyra, Log, TEXT("DamageHit location : %s"), *(NewRequest.WorldLocation.ToString()));
+	UE_LOG(LogD1, Log, TEXT("DamageHit location : %s"), *(NewRequest.WorldLocation.ToString()));
 	//Add Damage information to the current Niagara list - Damage informations are packed inside a FVector4 where XYZ = Position, W = Damage
 	TArray<FVector4> DamageList = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayVector4(NiagaraComp, Style->NiagaraArrayName);
 	DamageList.Add(FVector4(NewRequest.WorldLocation.X, NewRequest.WorldLocation.Y, NewRequest.WorldLocation.Z, LocalDamage));

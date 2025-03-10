@@ -2,7 +2,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "D1GameplayAbility_Interact.h"
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_NetworkSyncPoint.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
@@ -26,13 +26,13 @@ UD1GameplayAbility_Interact_Active::UD1GameplayAbility_Interact_Active(const FOb
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
 	NetSecurityPolicy = EGameplayAbilityNetSecurityPolicy::ServerOnlyTermination;
 
-	AbilityTags.AddTag(LyraGameplayTags::Ability_Interact_Active);
-	ActivationOwnedTags.AddTag(LyraGameplayTags::Status_Interact);
+	AbilityTags.AddTag(D1GameplayTags::Ability_Interact_Active);
+	ActivationOwnedTags.AddTag(D1GameplayTags::Status_Interact);
 
 	if (HasAnyFlags(RF_ClassDefaultObject))
 	{
 		FAbilityTriggerData TriggerData;
-		TriggerData.TriggerTag = LyraGameplayTags::Ability_Interact_Active;
+		TriggerData.TriggerTag = D1GameplayTags::Ability_Interact_Active;
 		TriggerData.TriggerSource = EGameplayAbilityTriggerSource::GameplayEvent;
 		AbilityTriggers.Add(TriggerData);
 	}
@@ -92,7 +92,7 @@ void UD1GameplayAbility_Interact_Active::ActivateAbility(const FGameplayAbilityS
 	Message.InteractionInfo = InteractionInfo;
 	
 	UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(this);
-	MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Interaction_Progress, Message);
+	MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Interaction_Progress, Message);
 
 	if (UAnimMontage* ActiveStartMontage = InteractionInfo.ActiveStartMontage)
 	{
@@ -152,7 +152,7 @@ void UD1GameplayAbility_Interact_Active::EndAbility(const FGameplayAbilitySpecHa
 		Message.bSwitchActive = true;
 			
 		UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(this);
-		MessageSubsystem.BroadcastMessage(LyraGameplayTags::Message_Interaction_Notice, Message);
+		MessageSubsystem.BroadcastMessage(D1GameplayTags::Message_Interaction_Notice, Message);
 	}
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -195,11 +195,11 @@ bool UD1GameplayAbility_Interact_Active::TriggerInteraction()
 	bool bCanActivate = false;
 	
 	FGameplayEventData Payload;
-	Payload.EventTag = LyraGameplayTags::Ability_Interact;
+	Payload.EventTag = D1GameplayTags::Ability_Interact;
 	Payload.Instigator = GetAvatarActorFromActorInfo();
 	Payload.Target = InteractableActor;
 	
-	Interactable->CustomizeInteractionEventData(LyraGameplayTags::Ability_Interact, Payload);
+	Interactable->CustomizeInteractionEventData(D1GameplayTags::Ability_Interact, Payload);
 	
 	if (UAbilitySystemComponent* AbilitySystem = GetAbilitySystemComponentFromActorInfo())
 	{
@@ -209,7 +209,7 @@ bool UD1GameplayAbility_Interact_Active::TriggerInteraction()
 			bTriggerSuccessful = AbilitySystem->TriggerAbilityFromGameplayEvent(
 				AbilitySpec->Handle,
 				AbilitySystem->AbilityActorInfo.Get(),
-				LyraGameplayTags::Ability_Interact,
+				D1GameplayTags::Ability_Interact,
 				&Payload,
 				*AbilitySystem
 			);

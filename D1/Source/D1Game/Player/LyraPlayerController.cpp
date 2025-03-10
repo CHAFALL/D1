@@ -3,14 +3,14 @@
 #include "LyraPlayerController.h"
 #include "CommonInputTypeEnum.h"
 #include "Components/PrimitiveComponent.h"
-#include "LyraLogChannels.h"
+#include "D1LogChannels.h"
 #include "LyraCheatManager.h"
 #include "LyraPlayerState.h"
 #include "Camera/LyraPlayerCameraManager.h"
 #include "UI/LyraHUD.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
 #include "EngineUtils.h"
-#include "LyraGameplayTags.h"
+#include "D1GameplayTags.h"
 #include "GameFramework/Pawn.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/GameInstance.h"
@@ -22,7 +22,7 @@
 #include "Settings/LyraSettingsShared.h"
 #include "Replays/LyraReplaySubsystem.h"
 #include "ReplaySubsystem.h"
-#include "Development/LyraDeveloperSettings.h"
+#include "Development/D1DeveloperSettings.h"
 #include "GameMapsSettings.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(LyraPlayerController)
@@ -215,7 +215,7 @@ void ALyraPlayerController::BroadcastOnPlayerStateChanged()
 	FGenericTeamId OldTeamID = FGenericTeamId::NoTeam;
 	if (LastSeenPlayerState != nullptr)
 	{
-		if (ILyraTeamAgentInterface* PlayerStateTeamInterface = Cast<ILyraTeamAgentInterface>(LastSeenPlayerState))
+		if (ID1TeamAgentInterface* PlayerStateTeamInterface = Cast<ID1TeamAgentInterface>(LastSeenPlayerState))
 		{
 			OldTeamID = PlayerStateTeamInterface->GetGenericTeamId();
 			PlayerStateTeamInterface->GetTeamChangedDelegateChecked().RemoveAll(this);
@@ -226,7 +226,7 @@ void ALyraPlayerController::BroadcastOnPlayerStateChanged()
 	FGenericTeamId NewTeamID = FGenericTeamId::NoTeam;
 	if (PlayerState != nullptr)
 	{
-		if (ILyraTeamAgentInterface* PlayerStateTeamInterface = Cast<ILyraTeamAgentInterface>(PlayerState))
+		if (ID1TeamAgentInterface* PlayerStateTeamInterface = Cast<ID1TeamAgentInterface>(PlayerState))
 		{
 			NewTeamID = PlayerStateTeamInterface->GetGenericTeamId();
 			PlayerStateTeamInterface->GetTeamChangedDelegateChecked().AddDynamic(this, &ThisClass::OnPlayerStateChangedTeam);
@@ -289,7 +289,7 @@ void ALyraPlayerController::ServerCheat_Implementation(const FString& Msg)
 #if USING_CHEAT_MANAGER
 	if (CheatManager)
 	{
-		UE_LOG(LogLyra, Warning, TEXT("ServerCheat: %s"), *Msg);
+		UE_LOG(LogD1, Warning, TEXT("ServerCheat: %s"), *Msg);
 		ClientMessage(ConsoleCommand(Msg));
 	}
 #endif // #if USING_CHEAT_MANAGER
@@ -305,7 +305,7 @@ void ALyraPlayerController::ServerCheatAll_Implementation(const FString& Msg)
 #if USING_CHEAT_MANAGER
 	if (CheatManager)
 	{
-		UE_LOG(LogLyra, Warning, TEXT("ServerCheatAll: %s"), *Msg);
+		UE_LOG(LogD1, Warning, TEXT("ServerCheatAll: %s"), *Msg);
 		for (TActorIterator<ALyraPlayerController> It(GetWorld()); It; ++It)
 		{
 			ALyraPlayerController* LyraPC = (*It);
@@ -350,7 +350,7 @@ void ALyraPlayerController::OnPossess(APawn* InPawn)
 #if WITH_SERVER_CODE && WITH_EDITOR
 	if (GIsEditor && (InPawn != nullptr) && (GetPawn() == InPawn))
 	{
-		for (const FLyraCheatToRun& CheatRow : GetDefault<ULyraDeveloperSettings>()->CheatsToRun)
+		for (const FLyraCheatToRun& CheatRow : GetDefault<UD1DeveloperSettings>()->CheatsToRun)
 		{
 			if (CheatRow.Phase == ECheatExecutionTime::OnPlayerPawnPossession)
 			{
@@ -435,19 +435,19 @@ void ALyraPlayerController::UpdateHiddenComponents(const FVector& ViewLocation, 
 
 void ALyraPlayerController::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 {
-	UE_LOG(LogLyraTeams, Error, TEXT("You can't set the team ID on a player controller (%s); it's driven by the associated player state"), *GetPathNameSafe(this));
+	UE_LOG(LogD1Teams, Error, TEXT("You can't set the team ID on a player controller (%s); it's driven by the associated player state"), *GetPathNameSafe(this));
 }
 
 FGenericTeamId ALyraPlayerController::GetGenericTeamId() const
 {
-	if (const ILyraTeamAgentInterface* PSWithTeamInterface = Cast<ILyraTeamAgentInterface>(PlayerState))
+	if (const ID1TeamAgentInterface* PSWithTeamInterface = Cast<ID1TeamAgentInterface>(PlayerState))
 	{
 		return PSWithTeamInterface->GetGenericTeamId();
 	}
 	return FGenericTeamId::NoTeam;
 }
 
-FOnLyraTeamIndexChangedDelegate* ALyraPlayerController::GetOnTeamIndexChangedDelegate()
+FOnD1TeamIndexChangedDelegate* ALyraPlayerController::GetOnTeamIndexChangedDelegate()
 {
 	return &OnTeamChangedDelegate;
 }
