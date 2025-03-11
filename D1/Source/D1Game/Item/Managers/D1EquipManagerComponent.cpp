@@ -12,7 +12,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Actors/D1EquipmentBase.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
-//#include "AbilitySystem/Attributes/D1CombatSet.h"
+#include "AbilitySystem/Attributes/D1CombatSet.h"
 #include "Character/LyraCharacter.h"
 #include "Player/LyraPlayerController.h"
 //#include "PocketWorld/D1PocketStage.h"
@@ -47,7 +47,6 @@ void FD1EquipEntry::Equip()
 
 	if (EquipManager->GetOwner()->HasAuthority())
 	{
-		/* - TEMP Rookiss
 		if (ULyraAbilitySystemComponent* ASC = Cast<ULyraAbilitySystemComponent>(EquipManager->GetAbilitySystemComponent()))
 		{
 			// Remove Previous Ability
@@ -83,7 +82,6 @@ void FD1EquipEntry::Equip()
 			
 			BaseStatHandle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 		}
-		*/
 
 		if (EquippableFragment->EquipmentType == EEquipmentType::Weapon || EquippableFragment->EquipmentType == EEquipmentType::Utility)
 		{

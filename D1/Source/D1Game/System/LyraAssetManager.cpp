@@ -143,7 +143,7 @@ void ULyraAssetManager::InitializeGameplayCueManager()
 
 const ULyraGameData& ULyraAssetManager::GetGameData()
 {
-	return GetOrLoadTypedGameData<ULyraGameData>(LyraGameDataPath);
+	return GetOrLoadTypedGameData<ULyraGameData>(GameDataPath);
 }
 
 const ULyraPawnData* ULyraAssetManager::GetDefaultPawnData() const

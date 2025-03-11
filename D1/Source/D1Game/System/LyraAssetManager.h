@@ -101,7 +101,7 @@ protected:
 
 	// Global game data asset to use.
 	UPROPERTY(Config)
-	TSoftObjectPtr<ULyraGameData> LyraGameDataPath;
+	TSoftObjectPtr<ULyraGameData> GameDataPath;
 
 	// Loaded version of the game data
 	UPROPERTY(Transient)
