@@ -134,3 +134,10 @@ public:
 	FTimerHandle BlockAnimMontageTimerHandle;
 	FAbilityChangedDelegate AbilityChangedDelegate;
 };
+
+// 스킬을 총괄하는 스킬 매니저 같은 존재
+// 참고) LyraPawnExtensionComponent에서 ULyraAbilitySystemComponent를 들고 있음
+// 참고) LyraPawnExtensionComponent 초기화는 ULyraHeroComponent의 HandleChangeInitState에서 
+// 이거는 싱글톤처럼 전역으로 하는 것이 아니라 객체마다 들고 있어야 되는 이유: 
+// 객체마다 자기만의 스킬이 있을 것이므로 + 스킬 쿨타임 관리나 그런 계산도 해줘야 됨 (모두가 다른 스킬 상태를 들고 있어야 함)
+// 그래서 스킬 매니저가 어딘가에서 중앙에 있을 것이라고 볼 수 있음.
