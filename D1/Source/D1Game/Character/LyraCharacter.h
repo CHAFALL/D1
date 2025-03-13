@@ -95,7 +95,7 @@ struct TStructOpsTypeTraits<FSharedRepMovement> : public TStructOpsTypeTraitsBas
  *	New behavior should be added via pawn components when possible.
  */
 UCLASS(Config = Game, Meta = (ShortTooltip = "The base character pawn class used by this project."))
-class D1GAME_API ALyraCharacter : public AModularCharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface, public ID1TeamAgentInterface
+class D1GAME_API ALyraCharacter : public AModularCharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface, public ID1TeamAgentInterface, public ID1Interactable
 {
 	GENERATED_BODY()
 
@@ -226,6 +226,11 @@ private:
 
 	UFUNCTION()
 	void OnRep_MyTeamID(FGenericTeamId OldTeamID);
+
+public:
+	virtual FD1InteractionInfo GetPreInteractionInfo(const FD1InteractionQuery& InteractionQuery) const override;
+	virtual bool CanInteraction(const FD1InteractionQuery& InteractionQuery) const override;
+	virtual void GetMeshComponents(TArray<UMeshComponent*>& OutMeshComponents) const override;
 
 protected:
 	// FD1InteractionInfo는 한번 들어가보기

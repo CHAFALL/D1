@@ -74,6 +74,8 @@ public class D1Game : ModuleRules
 				"EngineSettings",
 				"DTLSHandlerComponent",
                 "NavigationSystem",
+                "NiagaraAnimNotifies",
+                "GameplayCameras",
             }
 		);
 
