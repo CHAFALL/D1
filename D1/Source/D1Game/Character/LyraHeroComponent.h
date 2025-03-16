@@ -83,7 +83,16 @@ protected:
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_LookMouse(const FInputActionValue& InputActionValue);
 	void Input_LookStick(const FInputActionValue& InputActionValue);
-	void Input_Crouch(const FInputActionValue& InputActionValue);
+
+	void Input_ChangeEquip_Weapon_Primary();
+	void Input_ChangeEquip_Weapon_Secondary();
+	void Input_ChangeEquip_Utility_Primary();
+	void Input_ChangeEquip_Utility_Secondary();
+	void Input_ChangeEquip_Utility_Tertiary();
+	void Input_ChangeEquip_Utility_Quaternary();
+
+	void Input_LocalInputConfirm();
+	void Input_LocalInputCancel();
 
 	TSubclassOf<ULyraCameraMode> DetermineCameraMode() const;
 	
