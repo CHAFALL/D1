@@ -1,4 +1,4 @@
-﻿#include "D1GameplayAbility_Weapon_Bow_ADS.h"
+#include "D1GameplayAbility_Weapon_Bow_ADS.h"
 
 #include "D1GameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
@@ -20,6 +20,7 @@ void UD1GameplayAbility_Weapon_Bow_ADS::ActivateAbility(const FGameplayAbilitySp
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
+	// 애니메이션의 타이밍을 맞출 때 WaitGameplayEvent를 이용 (시퀀스 제어 - 게임 내 특정 이벤트가 발생할 때까지 시퀀스나 로직의 진행을 일시 중지할 수 있음)
 	ADSEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, D1GameplayTags::GameplayEvent_Bow_ADS, nullptr, false, true);
 	if (ADSEventTask)
 	{
