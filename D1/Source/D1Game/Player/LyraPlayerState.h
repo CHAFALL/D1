@@ -4,6 +4,7 @@
 
 #include "AbilitySystemInterface.h"
 #include "ModularPlayerState.h"
+#include "AbilitySystem/LyraAbilitySet.h"
 #include "System/GameplayTagStack.h"
 #include "Teams/D1TeamAgentInterface.h"
 #include "D1Define.h"
@@ -190,4 +191,6 @@ public:
 public:
 	UPROPERTY(Replicated)
 	ECharacterClassType CharacterClassType = ECharacterClassType::Count;
+
+	FLyraAbilitySet_GrantedHandles AbilitySetGrantedHandles;
 };

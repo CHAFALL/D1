@@ -324,9 +324,9 @@ void ALyraPlayerState::Server_SelectClass_Implementation(ECharacterClassType Cla
 		}
 	}
 
-	/*AbilitySetGrantedHandles.TakeFromAbilitySystem(AbilitySystemComponent);
+	AbilitySetGrantedHandles.TakeFromAbilitySystem(AbilitySystemComponent);
 	if (ULyraAbilitySet* AbilitySet = ClassEntry.ClassAbilitySet)
 	{
 		AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, &AbilitySetGrantedHandles, this);
-	}*/
+	}
 }
